@@ -11,6 +11,7 @@ Vincent Toups (PhD)
 
 Course Schedule (Roughly):
 
+```
 |       Date | Day         | Subject                                 | Time                |
 | 2024-08-19 | (Monday)    | Introduction                            | (3:30 PM - 4:50 PM) |
 | 2024-08-21 | (Wednesday) | Compute Resources                       | (3:30 PM - 4:50 PM) |
@@ -41,6 +42,8 @@ Course Schedule (Roughly):
 | 2024-11-18 | (Monday)    | Web Scraping                            | (3:30 PM - 4:50 PM) |
 | 2024-11-20 | (Wednesday) | Class Presentations I                   | (3:30 PM - 4:50 PM) |
 | 2024-11-25 | (Monday)    | Class Presentations II                  | (3:30 PM - 4:50 PM) |
+```
+
 
 Labs are always on Tuesday at 2pm - 3pm and will serve as tutorial and extra class time.
 
