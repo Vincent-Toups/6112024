@@ -50,10 +50,18 @@ Labs are always on Tuesday at 2pm - 3pm and will serve as tutorial and extra cla
 Useful Reading Material
 -----------------------
 
-[R For Datascience](https://r4ds.hadley.nz/)
-[Learn Bash in Y Minutes](https://learnxinyminutes.com/docs/bash/)
-[Learn Python in Y Minute](https://learnxinyminutes.com/docs/python/)
-[Learn Docker in Y Minutes](https://learnxinyminutes.com/docs/docker/)
+1. [R For Datascience](https://r4ds.hadley.nz/)
+2. [Learn Bash in Y Minutes](https://learnxinyminutes.com/docs/bash/)
+3. [Learn Python in Y Minute](https://learnxinyminutes.com/docs/python/)
+4. [Learn Docker in Y Minutes](https://learnxinyminutes.com/docs/docker/)
+
+Example Repository
+------------------
+
+Much of the grade in this course will derive from a long term project. An
+example of such a project is here:
+
+[Ashar PRT Demographics](https://github.com/Vincent-Toups/ashar-prt-demographics)
 
 More to come.
 
