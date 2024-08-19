@@ -1,0 +1,57 @@
+# R and RStudio
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+.Rapp.history
+
+# Emacs
+*~
+.#*
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Common binary formats
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.tiff
+*.ico
+*.svg
+*.eps
+*.ps
+*.mp3
+*.mp4
+*.mov
+*.avi
+*.wmv
+*.flv
+*.mkv
+*.webm
+*.zip
+*.tar
+*.gz
+*.bz2
+*.rar
+*.7z
+*.exe
+*.dll
+*.so
+*.dylib
+*.o
+*.a
+*.class
+*.jar
+*.war
+*.ear
