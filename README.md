@@ -47,4 +47,22 @@ Course Schedule (Roughly):
 
 Labs are always on Tuesday at 2pm - 3pm and will serve as tutorial and extra class time.
 
+Useful Reading Material
+-----------------------
+
+[R For Datascience](https://r4ds.hadley.nz/)
+[Learn Bash in Y Minutes](https://learnxinyminutes.com/docs/bash/)
+[Learn Python in Y Minute](https://learnxinyminutes.com/docs/python/)
+[Learn Docker in Y Minutes](https://learnxinyminutes.com/docs/docker/)
+
+More to come.
+
+Old Repo
+--------
+
+[The old 611 repository](https://github.com/Vincent-Toups/datasci611) contains
+all the course notes which this repository hopes to simplify, correct and
+improve over the course of this semester. Intreped students may wish to peruse it.
+
+
 
