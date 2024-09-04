@@ -1,0 +1,1137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2024-08-28 Wed 19:23 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>&lrm;</title>
+<meta name="generator" content="Org mode" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org4f1af42">1. What is Git</a></li>
+<li><a href="#org5ce40b4">2. Enter Git</a></li>
+<li><a href="#org516a5a4">3. What is Git, though?</a></li>
+<li><a href="#orgddcd569">4. Github?</a></li>
+<li><a href="#org5b89c7b">5. Git User Stories</a>
+<ul>
+<li><a href="#orgced3276">5.1. Recovering Lost Work</a></li>
+<li><a href="#org027a724">5.2. Coordinating with Other Developers</a></li>
+<li><a href="#org57d8d0e">5.3. Understanding the Past</a></li>
+</ul>
+</li>
+<li><a href="#org429a214">6. The Awful Truth</a></li>
+<li><a href="#orgb33f49a">7. Why use git at the command line?</a></li>
+<li><a href="#org9960462">8. How use git at the command line?</a></li>
+<li><a href="#orge0533f9">9. Git Basics</a></li>
+<li><a href="#org8b03861">10. A historical note</a></li>
+<li><a href="#org04926ca">11. What is Version Control (Baby Version)</a></li>
+<li><a href="#org4b20039">12. Additional Commits</a></li>
+<li><a href="#org659102d">13. The Git Trinity</a></li>
+<li><a href="#org93f29ee">14. Using Github</a>
+<ul>
+<li><a href="#org7d49831">14.1. Step 1</a></li>
+</ul>
+</li>
+<li><a href="#orgb90a445">15. What is an SSH Key Pair?</a></li>
+<li><a href="#orgbc22316">16. Conclusions</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org4f1af42" class="outline-2">
+<h2 id="org4f1af42"><span class="section-number-2">1</span> What is Git</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Git is a "revision control system." The motivation for such systems is
+that it is very difficult for a group of people to work on a software
+project <i>at the same time</i>. The original version control systems aimed
+to solve this problem with centralized repositories.
+</p>
+
+<p>
+Users would have copies of the repository (which contains the
+authoritative source code for the project) and a suite of tools which
+constitute the version control system would make sure that changes
+that were submitted back to the official version of the code were
+correct.
+</p>
+
+<p>
+These systems also had the benefit of keeping a history of the
+project.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5ce40b4" class="outline-2">
+<h2 id="org5ce40b4"><span class="section-number-2">2</span> Enter Git</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Linux is a Unix-like operating system which is now probably the most
+common OS in the world in terms of computer clock cycles. Although
+Linux was created by Linus Torvalds, its development is a truly global
+collaborative effort.
+</p>
+
+
+<div class="figure">
+<p><img src="./torvalds.jpg" alt="torvalds.jpg" />
+</p>
+<p><span class="figure-number">Figure 1: </span>Linus Torvals, famous Jerk.</p>
+</div>
+
+<p>
+Up until ~2005 Linux was developed with BitKeeper, a proprietary
+system. Some kernel developers had done a little reverse engineering
+of that system and BitKeeper withdrew its free license so, over the
+course of several months Torvalds developed git for the purpose of
+managing distributed development of Linux.
+</p>
+
+<p>
+To this day, it is still the Linux developers who use git at the
+highest level and there is much to be admired about their workflow if
+not their culture.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org516a5a4" class="outline-2">
+<h2 id="org516a5a4"><span class="section-number-2">3</span> What is Git, though?</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Git is a tool which allows to keep a history of your software project
+as a series of "checkpoints." It also allows you or another party or
+parties to maintain other <i>versions</i> of the software project, in which
+case git provides extensive utilities to merge or otherwise combine or
+modify multiple different "branches" or "forks" of the software.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgddcd569" class="outline-2">
+<h2 id="orgddcd569"><span class="section-number-2">4</span> Github?</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+<i>Github</i> is a website which allows you to <i>host</i> git repositories. In
+a very real sense <i>git</i> and <i>github</i> are two entirely distinct
+entities. One can easily spend their whole life using git productively
+in every way it is intended to be used <i>without ever using github.</i>
+</p>
+
+<p>
+That said, github provides a set of other services (on top of free
+non-commercial hosting) that make it an attractive place to back up
+and work with your git repositories. We will be using it in this
+course.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5b89c7b" class="outline-2">
+<h2 id="org5b89c7b"><span class="section-number-2">5</span> Git User Stories</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+(NB - a user story is a description of the sorts of things you might
+do with git).
+</p>
+</div>
+
+<div id="outline-container-orgced3276" class="outline-3">
+<h3 id="orgced3276"><span class="section-number-3">5.1</span> Recovering Lost Work</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+A pothole bounces your laptop out of the window of a bus whereupon it
+is run over by a cement truck.
+</p>
+
+<p>
+When you get your new laptop you say:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">
+git clone git@github.com:Vincent-Toups/datasci611.git
+
+</pre>
+</div>
+
+<p>
+And you get your code back at the last commit. Because you are
+diligent and careful, you commit often and have only lost a day or so
+of work.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org027a724" class="outline-3">
+<h3 id="org027a724"><span class="section-number-3">5.2</span> Coordinating with Other Developers</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+You have a data science project on github which analyzes time series
+data. An interested researcher in France forks your repository and
+notices an improvement can be made to your data cleaning
+pipeline. They make a pull request on github. 
+</p>
+
+<p>
+You can see exactly what lines of code they change. Some of the
+changes are good but one line is problematic. You accept only the
+efficacious changes.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org57d8d0e" class="outline-3">
+<h3 id="org57d8d0e"><span class="section-number-3">5.3</span> Understanding the Past</h3>
+<div class="outline-text-3" id="text-5-3">
+<p>
+After working on your project for several months you run a piece of
+code that used to work but which you haven't fiddled with in
+awhile. It breaks.
+</p>
+
+<p>
+You write a small script to test for the error and git finds the exact
+commit (change) that broke the code. Your commit log tells you why you
+did it and makes it easy to resolve the problem.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org429a214" class="outline-2">
+<h2 id="org429a214"><span class="section-number-2">6</span> The Awful Truth</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Unfortunately, git is very much a tool which rewards the user only
+when they use it at a very high level. That is why we'll have another
+chapter on high level git usage. But for now we will satisfy ourselves
+with just using git as basic level.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb33f49a" class="outline-2">
+<h2 id="orgb33f49a"><span class="section-number-2">7</span> Why use git at the command line?</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+I'll be emphasizing using git from the command line. Why? Because in
+order to really get the benefits of the system we need to understand
+it at a deep level. Using the shell api directly is the best way to do
+that.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9960462" class="outline-2">
+<h2 id="org9960462"><span class="section-number-2">8</span> How use git at the command line?</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+On Linuxy systems and on a Mac you should be able to use your package
+manager to install git directly.
+</p>
+
+<p>
+Predictably, Windows is the real hassle here. On Windows you can
+install <a href="https://gitforwindows.org/">Git For Windows</a>, <a href="https://desktop.github.com/">Github Desktop</a>, <a href="https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-git">or use git on WSL</a>. Git is one
+of the few tools we'll primarily be using <span class="underline">outside</span> of our Docker
+environments, so you should choose one of these and make sure you know
+how to get a `git bash` going.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge0533f9" class="outline-2">
+<h2 id="orge0533f9"><span class="section-number-2">9</span> Git Basics</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+We create a git repository by going <span class="underline">into</span> the folder where we want
+the repository to be and saying `git init`.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">cd /tmp/
+rm -rf example
+mkdir example
+cd example
+git init --initial-branch main
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">Initialized empty Git repository in /tmp/example/.git/
+</pre>
+</div>
+
+<p>
+Note that all a git repository is is a directory which has a <code>.git</code>
+subdirectory. Of course that <code>.git</code> subdirectory is managed by <code>git</code>
+and needs to be specific in its format 
+</p>
+
+<p>
+Now we can enter the command which we will probably type most often in
+our git lives:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git status
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">On branch main
+
+No commits yet
+
+nothing to commit (create/copy files and use "git add" to track)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8b03861" class="outline-2">
+<h2 id="org8b03861"><span class="section-number-2">10</span> A historical note</h2>
+<div class="outline-text-2" id="text-10">
+<p>
+In older projects you might notice that the most important branch is
+often called "master." Given the history of western civilization and
+the ongoing impact of historical slavery in people's lives, the
+tendency has gradually shifted to using "main" as the most important
+branch.
+</p>
+
+<p>
+But this also serves as a good seque into the following useful
+comment: there is nothing special about the main branch - "main" is
+just a name which we apply to a branch to communicate the fact that it
+is an important branch. But from git's point of view, there isn't
+anything magical about it. A git repository can have many branches
+named whatever we'd like. It can, in fact, have multiple branches
+totally unrelated to one another, with no history in common.
+</p>
+
+<p>
+As we will learn when we discuss git concepts later, a branch is just
+a name pointing to a commit and a little bit of logic which tells that
+pointer to move forward when new commits are added to the branch.
+</p>
+
+<p>
+The <code>git status</code> invocation we performed above tells us about the
+current status of the repository we are in. <code>git</code> commands work
+anywhere beneath the directory 
+</p>
+</div>
+</div>
+
+<div id="outline-container-org04926ca" class="outline-2">
+<h2 id="org04926ca"><span class="section-number-2">11</span> What is Version Control (Baby Version)</h2>
+<div class="outline-text-2" id="text-11">
+<p>
+We've seen how to run git but what does it do?
+</p>
+
+<p>
+Simple version: git maintains a history of your codebase as a chain of
+"commits."
+</p>
+
+<p>
+Let's see what that looks like:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">cat &lt;&lt;EOF &gt; README.md
+Example
+=======
+
+This is an example readme at the first commit.
+
+EOF
+
+git status
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">On branch main
+
+No commits yet
+
+Untracked files:
+  (use "git add &lt;file&gt;..." to include in what will be committed)
+	README.md
+
+nothing added to commit but untracked files present (use "git add" to track)
+</pre>
+</div>
+
+<p>
+(Note - this business with EOF (stands for "End of File") is called a
+"here doc" because its a document right here. This is just a "stupid
+shell trick" to create a file in a shell script.
+</p>
+
+<p>
+Now we will make our first commit.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git add README.md # tell git we want README.md to be in the upcomming commit.
+git config --global user.email "toups@email.unc.edu"
+git config --global user.name "Vincent Toups"
+# we only have to do the above once.
+git commit -m "Initial commit."
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">[main (root-commit) ab48777] Initial commit.
+ 1 file changed, 5 insertions(+)
+ create mode 100644 README.md
+</pre>
+</div>
+
+<p>
+And the status:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git status
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">On branch main
+nothing to commit, working tree clean
+</pre>
+</div>
+
+<p>
+And now we can ask git to tell us the history of the project so far:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git log 
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">commit 3b04865fb07730643d9358b465713ef50e5177ba
+Author: Vincent Toups &lt;toups@email.unc.edu&gt;
+Date:   Mon Aug 30 11:34:03 2021 -0400
+
+    Initial commit.
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4b20039" class="outline-2">
+<h2 id="org4b20039"><span class="section-number-2">12</span> Additional Commits</h2>
+<div class="outline-text-2" id="text-12">
+<p>
+At its most basic level we use git by rinsing and repeating the above
+process.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">cat &lt;&lt;EOF &gt; hello.R
+print("Hello World.");
+EOF
+git add hello.R
+git commit -m "Initial R source file."
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">[main 32dd9c2] Initial R source file.
+ 1 file changed, 1 insertion(+)
+ create mode 100644 hello.R
+</pre>
+</div>
+
+<p>
+Note that a commit consists of ONLY those changes we tell git to add
+to it with `git add`. If you have used subversion (unlikely since this
+class is mostly youngsters) this is not how things work. Git doesn't
+"track" files. It just records changes which you tell it to record.
+</p>
+
+<p>
+Let's modify our README to see what a change to a file that is already
+in the repository history looks like.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">cat &lt;&lt;EOF &gt; README.md
+Example
+=======
+
+This is an example readme.
+
+In addition to editing the line above we've added
+some lines for didactic purposes.
+
+EOF
+
+git status
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">On branch main
+Changes not staged for commit:
+  (use "git add &lt;file&gt;..." to update what will be committed)
+  (use "git restore &lt;file&gt;..." to discard changes in working directory)
+	modified:   README.md
+
+no changes added to commit (use "git add" and/or "git commit -a")
+</pre>
+</div>
+
+<p>
+Note that git is telling us that a file is modified but that no
+changes are staged for commit.
+</p>
+
+<p>
+If we want more details we can ask:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git diff # read as "git difference"
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">diff --git a/README.md b/README.md
+index 818a9f8..3dbf654 100644
+--- a/README.md
++++ b/README.md
+@@ -1,5 +1,8 @@
+ Example
+ =======
+
+-This is an example readme at the first commit.
++This is an example readme.
++
++In addition to editing the line above we've added
++some lines for didactic purposes.
+
+</pre>
+</div>
+
+<p>
+The above is a patch. It describes how we need to change the previous
+state of the repository to make it match what we have now. Just squint
+at it for now, we'll learn to read patches in detail later.
+</p>
+
+<p>
+Let's create a new file so we can see hwo things work when there are
+multiple changes.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">cat &lt;&lt;EOF &gt; hello.py
+print("Hello World.");
+EOF
+git status
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">On branch main
+Changes not staged for commit:
+  (use "git add &lt;file&gt;..." to update what will be committed)
+  (use "git restore &lt;file&gt;..." to discard changes in working directory)
+	modified:   README.md
+
+Untracked files:
+  (use "git add &lt;file&gt;..." to include in what will be committed)
+	hello.py
+
+no changes added to commit (use "git add" and/or "git commit -a")
+</pre>
+</div>
+
+<p>
+Now one really nice thing about git is that it really does tell you
+how to use it if you just read the output of git status. Let's stage
+just the new file:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git add hello.py
+git status
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">On branch main
+Changes to be committed:
+  (use "git restore --staged &lt;file&gt;..." to unstage)
+	new file:   hello.py
+
+Changes not staged for commit:
+  (use "git add &lt;file&gt;..." to update what will be committed)
+  (use "git restore &lt;file&gt;..." to discard changes in working directory)
+	modified:   README.md
+
+</pre>
+</div>
+
+<p>
+Now we can see that if we <code>commit</code> the commit will only contain
+<code>hello.py</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git commit -m "Added hello.py"
+git status
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">[main 561ace2] Added hello.py
+ 1 file changed, 1 insertion(+)
+ create mode 100644 hello.py
+On branch main
+Changes not staged for commit:
+  (use "git add &lt;file&gt;..." to update what will be committed)
+  (use "git restore &lt;file&gt;..." to discard changes in working directory)
+	modified:   README.md
+
+no changes added to commit (use "git add" and/or "git commit -a")
+</pre>
+</div>
+
+<p>
+Sure enough - we no longer see any information about <code>hello.py</code> but
+our other changes are still there.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org659102d" class="outline-2">
+<h2 id="org659102d"><span class="section-number-2">13</span> The Git Trinity</h2>
+<div class="outline-text-2" id="text-13">
+<p>
+A bit like when we learned Bash you need to start to build a mental
+model of git in your brain. And the three most important parts of that
+mental model are:
+</p>
+
+<ol class="org-ol">
+<li>the branch (and its HEAD) - the current state of the repository at
+the HEAD of the last branch.</li>
+<li>the staging area - the changes that will become the <i>next</i> commit.</li>
+<li>the working copy - what is in the directory where you are working.</li>
+</ol>
+
+<p>
+The thing to burn into your brain is "I fill the staging area with git
+add and then add those changes to the branch with git commit."
+</p>
+</div>
+</div>
+
+<div id="outline-container-org93f29ee" class="outline-2">
+<h2 id="org93f29ee"><span class="section-number-2">14</span> Using Github</h2>
+<div class="outline-text-2" id="text-14">
+<p>
+Github is a hosting service for git repositories plus a constellation
+of other utilities. 
+</p>
+
+<p>
+It is entirely separate from git and, in a sense, is parasitic on
+it. This is typical of <a href="https://en.wikipedia.org/wiki/Platform_economy#Assessment">Platform Economics</a> and we should all be a
+little suspicious of it. But like the jaws of history, we are all in
+the jaws of network effects and consequently we have to accomodate
+github.
+</p>
+
+<p>
+I will only say that there are <a href="https://itsfoss.com/github-alternatives/">alternatives</a>.
+</p>
+</div>
+
+<div id="outline-container-org7d49831" class="outline-3">
+<h3 id="org7d49831"><span class="section-number-3">14.1</span> Step 1</h3>
+<div class="outline-text-3" id="text-14-1">
+<p>
+The first step is to create a git repository locally. We know how to
+do that already. When you are ready to push to github, you create a
+repository there like this:
+</p>
+
+
+<div class="figure">
+<p><img src="./new_repository.png" alt="new_repository.png" />
+</p>
+<p><span class="figure-number">Figure 2: </span>Creating a new repository.</p>
+</div>
+
+<p>
+This will give you some instructions like this:
+</p>
+
+
+<div class="figure">
+<p><img src="./new_form.png" alt="new_form.png" />
+</p>
+<p><span class="figure-number">Figure 3: </span>Filling in the form</p>
+</div>
+
+<p>
+I'm sure there are situations where you might want to create a
+repository <span class="underline">first</span> on github and then clone it, but it seems silly to
+me. We have at least that much dignity.
+</p>
+
+<p>
+We want the second set of instructions from this:
+</p>
+
+<pre class="example">
+…or create a new repository on the command line
+
+echo "# 611-example" &gt;&gt; README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin git@github.com:Vincent-Toups/611-example.git
+git push -u origin main
+
+…or push an existing repository from the command line
+
+git remote add origin git@github.com:Vincent-Toups/611-example.git
+git branch -M main
+git push -u origin main
+
+</pre>
+
+<p>
+Indeed, these instructions sort of assume we're real git newbies,
+which we are not. We are already on the branch <code>main</code> so we just need
+to say 
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git remote add origin git@github.com:Vincent-Toups/611-example.git
+git push -u origin main
+</pre>
+</div>
+
+<p>
+But wait!
+</p>
+
+<p>
+Before we do that we need to think about <i>authentication</i>.
+</p>
+
+<p>
+If you are using Windows git probably installed a credential
+manager. But I'm going to show you how to set up an SSH key so you
+don't have to keep typing in your git password over and over and so
+you'll know how to use ssh keys later for other reasons.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb90a445" class="outline-2">
+<h2 id="orgb90a445"><span class="section-number-2">15</span> What is an SSH Key Pair?</h2>
+<div class="outline-text-2" id="text-15">
+<p>
+SSH Keys are handy little blobs of data. You have a public key, which
+you can freely distribute to anyone for any reason, pretty much. And
+you have a private key. Using your private key you can generate a
+message which someone can use your public key to verify comes from
+you. You don't need to share your private key to authenticate
+yourself.
+</p>
+
+<p>
+On a unix-like shell (git bash also works) you generate an ssh key pair
+like this:
+</p>
+
+<p>
+(PS - DON'T do this in your git repository! Keep your ssh key private!)
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">$ cd /tmp/
+$ mkdir ssh-keys
+$ cd ssh-keys/
+$ ssh-keygen
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/toups/.ssh/id_rsa): github_rsa_key
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in github_rsa_key
+Your public key has been saved in github_rsa_key.pub
+The key fingerprint is:
+SHA256:OrCwHThgGEzWpSHmyqt4jdIOca31GZ51Q1n6bcFJW2c toups@7cdbeba530bb
+The key's randomart image is:
++---[RSA 3072]----+
+|+=....      . . E|
+|=o..o      + o =.|
+|oo .      +   =  |
+|+. o     . . . . |
+|o.= = . S o . o  |
+| o.B * * . . .   |
+|.oooo B          |
+|+.+ .  .         |
+|o+.              |
++----[SHA256]-----+
+$  
+</pre>
+</div>
+
+<p>
+This will generate two files. It is very important to understand that
+the <code>.pub</code> file is the PUBLIC key. This is the key you can upload to
+github. Never let anyone have a copy of your private key. Indeed, be
+careful to avoid distributing it accidentally!
+</p>
+
+<p>
+Now we can upload our key to github. First select "Settings":
+</p>
+
+
+
+<div class="figure">
+<p><img src="./settings.png" alt="settings.png" />
+</p>
+<p><span class="figure-number">Figure 4: </span>select settings</p>
+</div>
+
+<p>
+Then "SSH and GPG Keys"
+</p>
+
+
+<div class="figure">
+<p><img src="./ssh-keys-menu.png" alt="ssh-keys-menu.png" />
+</p>
+<p><span class="figure-number">Figure 5: </span>keys</p>
+</div>
+
+<p>
+Then "New SSH Key"
+</p>
+
+
+<div class="figure">
+<p><img src="./new-ssh-key.png" alt="new-ssh-key.png" />
+</p>
+<p><span class="figure-number">Figure 6: </span>new ssh key</p>
+</div>
+
+<p>
+You can put anything you want for the title, but its useful to put
+something like "work laptop" that identifies where the associated
+private key is stored. Then you will need to open the public key file
+(in notepad, for instance) and copy it carefully into the text box.
+</p>
+
+<p>
+Once you've completed this process you can finally go back to your
+console.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">ssh-add /tmp/ssh-keys/github_rsa_key
+git remote add origin git@github.com:Vincent-Toups/611-example.git
+git push -u origin main  
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">Branch 'main' set up to track remote branch 'main' from 'origin'.
+</pre>
+</div>
+
+<p>
+Here we've informed our ssh-agent that we want to use the specified
+private key and then we simply push. If we refresh our repo page we
+should see our files and our README.
+</p>
+
+
+<div class="figure">
+<p><img src="./repo.png" alt="repo.png" />
+</p>
+<p><span class="figure-number">Figure 7: </span>Tada</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbc22316" class="outline-2">
+<h2 id="orgbc22316"><span class="section-number-2">16</span> Conclusions</h2>
+<div class="outline-text-2" id="text-16">
+<p>
+So we have a basic understanding of git. There is a lot more to learn
+and we shall. But now you should be able to create a repository, add
+stuff to commits, associate it with a repository hosted by github,
+push, etc.
+</p>
+
+<p>
+Eventually we will need to learn all the powers of git. But in the
+meantime this will let us get started with some data science!
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Created: 2024-08-28 Wed 19:23</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
