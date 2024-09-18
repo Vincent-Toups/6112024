@@ -1,0 +1,23 @@
+PHONY: purge
+PHONY: clean
+
+purge:
+	rm source_data/*
+	make clean
+
+clean:
+	rm derived_data/*
+	rm logs/*
+	rm figures/*
+
+source_data/character-data.csv:
+	wget https://github.com/Vincent-Toups/datasci611/raw/main/lectures/06-tidy-data-and-ggplot/source_data/character-data.csv -O source_data/character-data.csv
+
+source_data/powers.csv:
+	wget https://github.com/Vincent-Toups/datasci611/raw/main/lectures/06-tidy-data-and-ggplot/source_data/powers.csv -O source_data/powers.csv
+
+
+derived_data/deduplicated_%.csv logs/deduplication_%.csv:\
+  source_data/%.csv deduplicate.R
+	Rscript deduplicate.R $*
+

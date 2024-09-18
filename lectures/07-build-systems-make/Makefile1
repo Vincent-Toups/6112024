@@ -1,0 +1,10 @@
+derived_data/deduplicated.csv: deduplicate.R source_data/character-data.csv utils.R
+	Rscript deduplicate.R
+
+derived_data/deduplicated_powers.csv: deduplicate_powers.R\
+ utils.R\
+ source_data/powers.csv
+	Rscript deduplicate_powers.R
+
+
+

@@ -1,0 +1,1333 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2021-09-22 Wed 12:29 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>&lrm;</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="toups" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgff16f7a">1. The Problem</a></li>
+<li><a href="#orgf31e9d9">2. The Solution</a></li>
+<li><a href="#org0f23cb9">3. Enter The Disk</a></li>
+<li><a href="#orgc27b5e5">4. Using a Makefile</a></li>
+<li><a href="#org6899d84">5. Handling Multiple Targets Per Recipe</a></li>
+<li><a href="#orge21c39f">6. PHONY targets</a></li>
+<li><a href="#org611b15d">7. clean and purge</a></li>
+<li><a href="#org56bad4e">8. Deeper Dependencies</a></li>
+<li><a href="#org45051b2">9. Figures</a></li>
+<li><a href="#org86d4268">10. Even without Clean Make has Our Back.</a></li>
+<li><a href="#org719e3cb">11. Make problems to watch out for</a></li>
+<li><a href="#orgc179024">12. Conclusions</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgff16f7a" class="outline-2">
+<h2 id="orgff16f7a"><span class="section-number-2">1</span> The Problem</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+By now we know enough to be dangerous. If you are following along with
+your own project you might even have an RMarkdown file or a set of
+scripts that generate cleaned data, tables, figures or other
+results. Things are probably beginning to feel a little messy. 
+</p>
+
+<p>
+The typical answer given for how to tame this mess is to use notebook
+style development but frankly this answer is a bad one.
+</p>
+
+<ol class="org-ol">
+<li>it is monolithic and linear</li>
+<li>it introduces complicated dependencies between cells</li>
+</ol>
+
+<p>
+Large computational steps occur in early cells and hang around
+forever. It isn't so easy to track changes in such a live session and
+to make sure that the results propogate throughout the document in an
+appropriate way.
+</p>
+
+<p>
+The linearity of the document is also misleading - data science
+involves lots of side paths down which we go and return. You neither
+want these in a main document nor do you want to throw them away.
+</p>
+
+<p>
+One solution might be to split your work into <span class="underline">many</span> notebooks but
+what about data shared between them? 
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf31e9d9" class="outline-2">
+<h2 id="orgf31e9d9"><span class="section-number-2">2</span> The Solution</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Artifacts and build systems. A figure, a document, a table, a cleaned
+or reformatted data set, these are all examples of <span class="underline">artifacts</span>. The
+key idea is that an artifact is the result of some code which produces
+it and the data required for that production.
+</p>
+
+<p>
+Read through our example notebook from lecture six. Here is a snippet:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-markdown">
+Let's standardize our character data and deduplicate the results.
+
+<span style="color: #b3b3b3;">```{</span><span style="color: #9370db;">r</span><span style="color: #b3b3b3;">}</span>
+
+<span style="color: #1e90ff;">df &lt;- read_csv("source_data/character-data.csv");</span>
+
+<span style="color: #1e90ff;">names(df) &lt;- simplify_strings(names(df)); ## simplify our column names</span>
+<span style="color: #1e90ff;">                                          ## as well</span>
+
+<span style="color: #1e90ff;">deduplicated &lt;- df %&gt;% mutate(across(everything(), simplify_strings)) %&gt;%</span>
+<span style="color: #1e90ff;">    distinct();</span>
+<span style="color: #1e90ff;">print(sprintf("Before simplification and deduplication: %d, after %d (%0.2f %% decrease)",</span>
+<span style="color: #1e90ff;">              nrow(df),</span>
+<span style="color: #1e90ff;">              nrow(deduplicated),</span>
+<span style="color: #1e90ff;">              100-100*nrow(deduplicated)/nrow(df)));</span>
+<span style="color: #b3b3b3;">```</span>
+
+Let's do more analysis now...
+
+</pre>
+</div>
+
+<p>
+In the midst of a RMarkdown document it can be obscure, what we is
+happening here is actually a little unit of computation: data is being
+loaded, a specific, atomic modification is happening, we characterize
+the result, and then we're finished.
+</p>
+
+<p>
+It would be better to put this in a standalone script:
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 1: </span>deduplicate.R</label><pre class="src src-R"><span style="color: #1e90ff;">library</span>(tidyverse);
+<span style="color: #1e90ff;">source</span>(<span style="color: #ffa07a;">"utils.R"</span>);
+
+df <span style="color: #1e90ff;">&lt;-</span> read_csv(<span style="color: #ffa07a;">"source_data/character-data.csv"</span>);
+
+names(df) <span style="color: #1e90ff;">&lt;-</span> simplify_strings(names(df)); 
+
+deduplicated <span style="color: #1e90ff;">&lt;-</span> df <span style="color: #1e90ff;">%&gt;%</span> mutate(across(everything(), simplify_strings)) <span style="color: #1e90ff;">%&gt;%</span>
+    distinct();
+print(sprintf(<span style="color: #ffa07a;">"Before simplification and deduplication: %d, after %d (%0.2f %% decrease)"</span>,
+              nrow(df),
+              nrow(deduplicated),
+              100-100*nrow(deduplicated)/nrow(df)));
+</pre>
+</div>
+
+<p>
+This is already an improvement. Inside another script or notebook file
+we could simply say:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #1e90ff;">source</span>(<span style="color: #ffa07a;">"deduplicate.R"</span>)
+
+<span style="color: #cd853f;">## </span><span style="color: #cd853f;">other stuff that depends on `deduplicated`</span>
+</pre>
+</div>
+
+<p>
+The benefits of this should be obvious: we now have just one place
+where we do the cleanup step. If we fix an error there, it will
+automatically be reflected in any other script that sources the
+deduplication step.
+</p>
+
+<p>
+But this approach may cause other problems, left as is. For one thing,
+sourceing such scripts pollutes the global namespace. We might
+accidentally source the same script multiple times and cause problems
+(not all tidying steps are idempotent). And how do we represent
+dependencies between tidying steps? Maybe a step requires both the
+deduplicated data and the original input. Whose responsibility is it
+to load that data - the deduplicate script or the host? What happens
+if the deduplicate script doesn't need it anymore but the host does?
+</p>
+
+<p>
+Another issue is that some step represented by a script might take a
+very long time. If we source it at each point we use it then all of
+our scripts are slow.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0f23cb9" class="outline-2">
+<h2 id="org0f23cb9"><span class="section-number-2">3</span> Enter The Disk</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+The solution to this process is for each individual step in the
+analysis to read its dependencies from the disk and write its output
+to the disk. Then steps can be totally atomic. They are run by
+themselves with an empty interpreter. The depend on no global state
+and leave no global state behind.
+</p>
+
+<p>
+You could replace every place you say <code>source("some-step.R")</code> with a
+<code>read_csv("some-artifact.csv")</code> but you still might get bitten by the
+fact that artifacts get out of sync with one another. Script A might
+depend on artifact B but you might forget to re-run it after Artifact
+B has changed. 
+</p>
+
+<p>
+A build system is the technology that connects your artifacts together
+for you, letting you easily understand which things depend on which
+and make sure they are up to date.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc27b5e5" class="outline-2">
+<h2 id="orgc27b5e5"><span class="section-number-2">4</span> Using a Makefile</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Make is a linux utility which provides a build system. It is a
+complicated tool but in this class we're going to use the simplest
+features only.
+</p>
+
+<p>
+Like every other tool we're learning in this course we need to
+understand a Makefile as a sort of program and understand its
+evaluation rules.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Makefile">target: dependency1 dependency2 ...
+        recipe1
+        recipe2
+</pre>
+</div>
+
+<p>
+Here we see one of the fundamental units of a Makefile. A target, its
+dependencies, and the recipe that produces the target. Let's refactor
+our cleanup step.
+</p>
+
+<p>
+First, we pull out our utility definitions into a <code>utils.R</code>:
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 2: </span>utils.R</label><pre class="src src-R"><span style="color: #1e90ff;">library</span>(tidyverse); 
+
+<span style="color: #00ff7f;">simplify_strings</span> <span style="color: #1e90ff;">&lt;-</span> <span style="color: #20b2aa; font-weight: bold;">function</span>(s){
+    s <span style="color: #1e90ff;">&lt;-</span> str_to_lower(s);
+    s <span style="color: #1e90ff;">&lt;-</span> str_trim(s);
+    s <span style="color: #1e90ff;">&lt;-</span> str_replace_all(s,<span style="color: #ffa07a;">"[^a-z]+"</span>,<span style="color: #ffa07a;">"_"</span>)
+    s
+}
+
+<span style="color: #00ff7f;">ensure_directory</span> <span style="color: #1e90ff;">&lt;-</span> <span style="color: #20b2aa; font-weight: bold;">function</span>(directory){
+    <span style="color: #20b2aa; font-weight: bold;">if</span>(!dir.exist(directory)){
+        dir.create(directory);
+    }
+}
+
+</pre>
+</div>
+
+<p>
+Our tidying step can stay mostly the same but we need to save our
+results to disk at the end of the step:
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 3: </span>deduplicate.R</label><pre class="src src-R"><span style="color: #1e90ff;">library</span>(tidyverse);
+<span style="color: #1e90ff;">source</span>(<span style="color: #ffa07a;">"utils.R"</span>);
+
+df <span style="color: #1e90ff;">&lt;-</span> read_csv(<span style="color: #ffa07a;">"source_data/character-data.csv"</span>);
+
+names(df) <span style="color: #1e90ff;">&lt;-</span> simplify_strings(names(df)); 
+
+deduplicated <span style="color: #1e90ff;">&lt;-</span> df <span style="color: #1e90ff;">%&gt;%</span> mutate(across(everything(), simplify_strings)) <span style="color: #1e90ff;">%&gt;%</span>
+    distinct();
+print(sprintf(<span style="color: #ffa07a;">"Before simplification and deduplication: %d, after %d (%0.2f %% decrease)"</span>,
+              nrow(df),
+              nrow(deduplicated),
+              100-100*nrow(deduplicated)/nrow(df)));
+
+ensure_directory(<span style="color: #ffa07a;">"derived_data"</span>);
+write_csv(deduplicated, <span style="color: #ffa07a;">"derived_data/deduplicated.csv"</span>);
+
+</pre>
+</div>
+
+<p>
+And now we can put an entry in our Makefile;
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Makefile">derived_data/deduplicated.csv: deduplicate.R source_data/character-data.csv utils.R
+        Rscript deduplicate.R
+</pre>
+</div>
+
+<p>
+Once we have such we can use Make to test whether it works.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">
+cp Makefile0 Makefile
+cp utils0.R utils.R
+cp deduplicate0.R deduplicate.R 
+cp utils0.R utils.R
+
+make derived_data/deduplicated.csv
+head derived_data/deduplicated.csv
+
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">Rscript deduplicate.R
+[1] <span style="color: #ffa07a;">"Before simplification and deduplication: 696346, after 138483 (80.11 % decrease)"</span>
+character,universe,property_name,value
+abraham_dusk,wildstorm_universe,real_name,abraham_dusk
+abraham_dusk,wildstorm_universe,main_alias,the_metropolitan
+abraham_dusk,wildstorm_universe,other_aliases,last_angel
+abraham_dusk,wildstorm_universe,affiliation,the_monarchy
+abraham_dusk,wildstorm_universe,base_of_operations,the_throne
+abraham_dusk,wildstorm_universe,alignment,good
+abraham_dusk,wildstorm_universe,identity,secret_identity
+abraham_dusk,wildstorm_universe,citizenship,american
+abraham_dusk,wildstorm_universe,marital_status,single
+</pre>
+</div>
+
+<p>
+Make thus serves as a command line interface for our project. If you
+look in the makefile you can see the things our project can
+produce. You can also see what they depend on. To build something you
+just ask Make to do it for you.
+</p>
+
+<p>
+The true genius of Make doesn't shine through until we have more
+artifacts. Let's write a new one to clean up our power data in the
+same sort of way:
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 4: </span>Makefile1</label><pre class="src src-Makefile">derived_data/deduplicated.csv: deduplicate.R source_data/character-data.csv utils.R
+        Rscript deduplicate.R
+
+derived_data/deduplicated_powers.csv: deduplicate_powers.R\
+ utils.R\
+ source_data/powers.csv
+        Rscript deduplicate_powers.R
+</pre>
+</div>
+
+<p>
+Note that these two artifacts don't depend on one another at all. If
+we modify or delete either of them, Make will rebuild it for us but
+the other codepath is not touched. Already an example of an
+improvement over the "rerun whole notebook" method.
+</p>
+
+<p>
+We can and should feel free to delete any and all derived artifacts
+secure in the knowledge that we can regenerate them with make:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">rm derived_data/deduplicated.csv
+make derived_data/deduplicated.csv
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">Rscript deduplicate.R
+[1] <span style="color: #ffa07a;">"Before simplification and deduplication: 696346, after 138483 (80.11 % decrease)"</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6899d84" class="outline-2">
+<h2 id="org6899d84"><span class="section-number-2">5</span> Handling Multiple Targets Per Recipe</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Hey: we're just printing this important information about rows
+lost. Why not record it to disk as its own artifact so that we can
+reference it later?
+</p>
+
+<p>
+Add the following to your `utils.R`
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #00ff7f;">make_logger</span> <span style="color: #1e90ff;">&lt;-</span> <span style="color: #20b2aa; font-weight: bold;">function</span>(filename, sep=<span style="color: #ffa07a;">"\n"</span>){
+    <span style="color: #20b2aa; font-weight: bold;">if</span>(file.exists(filename)){
+        file.remote(filename);
+    }
+    <span style="color: #20b2aa; font-weight: bold;">function</span>(...){
+        text <span style="color: #1e90ff;">&lt;-</span> sprintf(...);
+        cat(text, file=filename, sep=sep, append=T);
+    }
+}
+</pre>
+</div>
+
+<p>
+We can use this to log stuff out to a file during our operations. So
+our new deduplicate looks like this:
+</p>
+
+<p>
+#+CAPTION deduplicate.R
+</p>
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #1e90ff;">library</span>(tidyverse);
+<span style="color: #1e90ff;">source</span>(<span style="color: #ffa07a;">"utils.R"</span>);
+
+ensure_directory(<span style="color: #ffa07a;">"logs"</span>);
+
+log <span style="color: #1e90ff;">&lt;-</span> make_logger(<span style="color: #ffa07a;">"logs/deduplication-notes.md"</span>);
+
+df <span style="color: #1e90ff;">&lt;-</span> read_csv(<span style="color: #ffa07a;">"source_data/character-data.csv"</span>);
+
+names(df) <span style="color: #1e90ff;">&lt;-</span> simplify_strings(names(df)); 
+
+deduplicated <span style="color: #1e90ff;">&lt;-</span> df <span style="color: #1e90ff;">%&gt;%</span> mutate(across(everything(), simplify_strings)) <span style="color: #1e90ff;">%&gt;%</span>
+    distinct();
+log(<span style="color: #ffa07a;">"Before simplification and deduplication: %d, after %d (%0.2f %% decrease)"</span>,
+              nrow(df),
+              nrow(deduplicated),
+              100-100*nrow(deduplicated)/nrow(df));
+
+ensure_directory(<span style="color: #ffa07a;">"derived_data"</span>);
+write_csv(deduplicated, <span style="color: #ffa07a;">"derived_data/deduplicated.csv"</span>);
+</pre>
+</div>
+
+<p>
+Now we modify our Makefile to reflect that our recipe produces <span class="underline">two</span>
+artifacts.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 5: </span>Makefile</label><pre class="src src-Makefile">derived_data/deduplicated.csv logs/logs/deduplication-notes.md:\
+ deduplicate.R source_data/character-data.csv utils.R
+        Rscript deduplicate.R
+
+derived_data/deduplicated_powers.csv: deduplicate_powers.R\
+ utils.R\
+ source_data/powers.csv
+        Rscript deduplicate_powers.R
+</pre>
+</div>
+
+<p>
+Let's try this out:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">cp deduplicate1.R deduplicate.R
+cp utils1.R utils.R
+cp Makefile2 Makefile
+rm -f logs/deduplication-notes.md
+make logs/deduplication-notes.md
+cat logs/deduplication-notes.md
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">Rscript deduplicate.R
+Before simplification and deduplication: 696346, after 138483 (80.11 % decrease)
+</pre>
+</div>
+
+<p>
+We're kind of duplicating code here, since the same snippet suffices
+to tidy our power data and our other data set. Code reuse is good, so
+consider:
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 6: </span>deduplicate.R</label><pre class="src src-R"><span style="color: #1e90ff;">library</span>(tidyverse);
+<span style="color: #1e90ff;">source</span>(<span style="color: #ffa07a;">"utils.R"</span>);
+
+args <span style="color: #1e90ff;">&lt;-</span> commandArgs(trailingOnly=<span style="color: #9370db;">TRUE</span>);
+
+input_sd <span style="color: #1e90ff;">&lt;-</span> args[[1]];
+
+ensure_directory(<span style="color: #ffa07a;">"logs"</span>);
+
+log <span style="color: #1e90ff;">&lt;-</span> make_logger(sprintf(<span style="color: #ffa07a;">"logs/deduplication-%s.md"</span>, input_sd));
+
+df <span style="color: #1e90ff;">&lt;-</span> read_csv(sprintf(<span style="color: #ffa07a;">"source_data/%s.csv"</span>, input_sd));
+
+names(df) <span style="color: #1e90ff;">&lt;-</span> simplify_strings(names(df)); 
+
+deduplicated <span style="color: #1e90ff;">&lt;-</span> df <span style="color: #1e90ff;">%&gt;%</span> mutate(across(everything(), simplify_strings)) <span style="color: #1e90ff;">%&gt;%</span>
+    distinct();
+log(<span style="color: #ffa07a;">"Before simplification and deduplication of %s: %d, after %d (%0.2f %% decrease)"</span>,
+    input_sd,
+    nrow(df),
+    nrow(deduplicated),
+    100-100*nrow(deduplicated)/nrow(df));
+
+ensure_directory(<span style="color: #ffa07a;">"derived_data"</span>);
+write_csv(deduplicated, sprintf(<span style="color: #ffa07a;">"derived_data/deduplicated-%s.csv"</span>, input_sd));
+</pre>
+</div>
+
+<p>
+And the makefile:
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 7: </span>Makefile</label><pre class="src src-Makefile">derived_data/deduplicated-character-data.csv logs/deduplication-character-data.md:\
+ deduplicate.R source_data/character-data.csv utils.R
+        Rscript deduplicate.R character-data
+
+derived_data/deduplicated-powers.csv logs/deduplication-powers.md:\
+ deduplicate.R source_data/powers.csv utils.R
+        Rscript deduplicate.R powers
+</pre>
+</div>
+
+<p>
+Now the same code serves to deduplicate different data sets.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">cp deduplicate2.R deduplicate.R
+cp Makefile3 Makefile
+rm derived_data/*
+rm logs/*
+make derived_data/deduplicated_powers.csv
+head derived_data/deduplicated_powers.csv
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">
+</pre>
+</div>
+
+<p>
+Advanced note:
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 8: </span>Alternative:</label><pre class="src src-Makefile">
+derived_data/deduplicated_%.csv logs/deduplication_%.csv:\
+  source_data/%.csv deduplicate.R
+        Rscript deduplicate.R $*
+</pre>
+</div>
+
+<p>
+Now we can deduplicate any file which "makes sense" with one
+target. On the other hand, this is a downgrade in terms of
+understandability. We can no longer tell by looking at the Makefile
+which source data makes sense to deduplicate this way.
+</p>
+
+<p>
+Unless you really have a lot of targets that fit one pattern I
+recommend being explicit. People will be able to figure out which
+targets are appropriate here by looking at what other products are
+mentioned in other targets' dependencies but it can get quite abstract
+and complicated quite fast. 
+</p>
+
+<p>
+I recommend using patterns like this lightly. 
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge21c39f" class="outline-2">
+<h2 id="orge21c39f"><span class="section-number-2">6</span> PHONY targets</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+One of the things you'll be graded on is whether your repository
+builds "fresh" from a checkout. Since our gitignore files will include
+things like:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-gitignore">derived_data/*
+logs/*
+figures/*
+</pre>
+</div>
+
+<p>
+When I check out your repository for the first time I shouldn't have
+any of your intermediate artifacts. You'll want to bring your
+repository into this state from time to time to test everything out.
+</p>
+
+<p>
+We can do this with Make like this:
+</p>
+
+<p>
+#+INCLUDE "Makefile5" src Makefile
+</p>
+
+<p>
+Let's try it out.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">cp Makefile5 Makefile
+cp deduplicate2.R deduplicate.R
+cp utils1.R utils.R
+
+make clean
+make derived_data/deduplicated_powers.csv
+cat logs/deduplication_powers.md
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">rm derived_data/*
+Rscript deduplicate.R powers
+Before simplification and deduplication of powers: 52663, after 50937 (3.28 % decrease)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org611b15d" class="outline-2">
+<h2 id="org611b15d"><span class="section-number-2">7</span> clean and purge</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+You can have as many dummy targets as you want. Some people will have
+data analysis steps that take a really long time and they may want to
+have a clean-like step that doesn't kill the results of these files
+for local testing.
+</p>
+
+<p>
+Some people may be downloading their data sets in their Makefile and
+not want to delete those in every clean.
+</p>
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 9: </span>an example</label><pre class="src src-Makefile">PHONY: purge
+PHONY: clean
+
+purge:
+        rm source_data/*
+        make clean
+
+clean:
+        rm derived_data/*
+        rm logs/*
+        rm figures/*
+
+source_data/character-data.csv:
+        wget https://github.com/Vincent-Toups/datasci611/raw/main/lectures/06-tidy-data-and-ggplot/source_data/character-data.csv -O source_data/character-data.csv
+
+source_data/powers.csv:
+        wget https://github.com/Vincent-Toups/datasci611/raw/main/lectures/06-tidy-data-and-ggplot/source_data/powers.csv -O source_data/powers.csv
+
+
+derived_data/deduplicated_%.csv logs/deduplication_%.csv:\
+  source_data/%.csv deduplicate.R
+        Rscript deduplicate.R $*
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org56bad4e" class="outline-2">
+<h2 id="org56bad4e"><span class="section-number-2">8</span> Deeper Dependencies</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+So we've produce a few artifacts, let's produce some more to
+demonstrate how Make really makes life easier. We did quite a lot in
+the last lecture, but let's pick a narrow focus: we want to produce a
+cleaned up data set with just the gender data in it. 
+</p>
+
+<p>
+I like Make so much that I often write my <span class="underline">target</span> first:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Makefile">PHONY: clean
+
+clean:
+        rm derived_data/*
+        rm logs/*
+
+derived_data/deduplicated_%.csv logs/deduplication_%.csv:\
+  source_data/%.csv deduplicate.R
+        Rscript deduplicate.R $*
+
+derived_data/gender_data.csv: derived_data/deduplicated_character-data.csv make_gender_dataset.R
+        Rscript make_gender_dataset.R
+</pre>
+</div>
+
+<p>
+And now we can write our script
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #1e90ff;">library</span>(tidyverse);
+<span style="color: #1e90ff;">source</span>(<span style="color: #ffa07a;">"utils.R"</span>);
+
+good_values = str_split(<span style="color: #ffa07a;">"intersex non_binary genderless female male"</span>, <span style="color: #ffa07a;">" "</span>, simplify=<span style="color: #9370db;">TRUE</span>);
+
+data <span style="color: #1e90ff;">&lt;-</span> read_csv(<span style="color: #ffa07a;">"derived_data/deduplicated_character-data.csv"</span>) <span style="color: #1e90ff;">%&gt;%</span>
+    filter(property_name==<span style="color: #ffa07a;">"gender"</span>) <span style="color: #1e90ff;">%&gt;%</span>
+    filter(value <span style="color: #1e90ff;">%in%</span> good_values) <span style="color: #1e90ff;">%&gt;%</span>
+    mutate(value={
+        value[value==<span style="color: #ffa07a;">"genderless"</span>] <span style="color: #1e90ff;">&lt;-</span> <span style="color: #ffa07a;">"male"</span>;
+        value
+    }) <span style="color: #1e90ff;">%&gt;%</span>
+    write_csv(<span style="color: #ffa07a;">"derived_data/gender_data.csv"</span>);
+</pre>
+</div>
+
+<p>
+And test it:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">cp Makefile7 Makefile
+make clean
+make derived_data/gender_data.csv
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">rm derived_data/*
+rm logs/*
+Rscript deduplicate.R character-data
+Rscript make_gender_dataset.R
+</pre>
+</div>
+
+<p>
+Now let's add an additional step to our Makefile for joining our power
+data to our gender data.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Makefile">PHONY: clean
+
+clean:
+        rm derived_data/*
+        rm logs/*
+
+derived_data/deduplicated_%.csv logs/deduplication_%.csv:\
+  source_data/%.csv deduplicate.R
+        Rscript deduplicate.R $*
+
+derived_data/gender_data.csv: derived_data/deduplicated_character-data.csv make_gender_dataset.R
+        Rscript make_gender_dataset.R
+
+derived_data/power_gender_data.csv derived_data/power_gender_ranks.csv: derived_data/deduplicated_powers.csv derived_data/gender_data.csv make_power_gender_dataset.R
+        Rscript make_power_gender_dataset.R
+</pre>
+</div>
+
+<p>
+The code looks like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #1e90ff;">library</span>(tidyverse);
+<span style="color: #1e90ff;">source</span>(<span style="color: #ffa07a;">"utils.R"</span>);
+
+powers <span style="color: #1e90ff;">&lt;-</span> read_csv(<span style="color: #ffa07a;">"derived_data/deduplicated_powers.csv"</span>);
+
+genders <span style="color: #1e90ff;">&lt;-</span> read_csv(<span style="color: #ffa07a;">"derived_data/gender_data.csv"</span>);
+
+power_gender <span style="color: #1e90ff;">&lt;-</span> genders <span style="color: #1e90ff;">%&gt;%</span>
+    inner_join(powers, by=c(<span style="color: #ffa07a;">"character"</span>,<span style="color: #ffa07a;">"universe"</span>)) <span style="color: #1e90ff;">%&gt;%</span>
+    select(-url,-property_name) <span style="color: #1e90ff;">%&gt;%</span>
+    rename(gender=value) <span style="color: #1e90ff;">%&gt;%</span>
+    write_csv(<span style="color: #ffa07a;">"derived_data/power_gender_data.csv"</span>);
+
+gender_counts <span style="color: #1e90ff;">&lt;-</span> power_gender <span style="color: #1e90ff;">%&gt;%</span> group_by(gender) <span style="color: #1e90ff;">%&gt;%</span> tally(name=<span style="color: #ffa07a;">"total"</span>);
+
+probs <span style="color: #1e90ff;">&lt;-</span> power_gender <span style="color: #1e90ff;">%&gt;%</span>
+    inner_join(gender_counts, by=<span style="color: #ffa07a;">"gender"</span>) <span style="color: #1e90ff;">%&gt;%</span>
+    group_by(power, gender, total)  <span style="color: #1e90ff;">%&gt;%</span> 
+    summarize(p=length(character)/total[[1]]) <span style="color: #1e90ff;">%&gt;%</span>
+    arrange(gender,desc(p)) <span style="color: #1e90ff;">%&gt;%</span>
+    group_by(gender) <span style="color: #1e90ff;">%&gt;%</span>
+    mutate(rank=seq(length(p))) <span style="color: #1e90ff;">%&gt;%</span>
+    ungroup() <span style="color: #1e90ff;">%&gt;%</span>
+    write_csv(<span style="color: #ffa07a;">"derived_data/power_gender_ranks.csv"</span>);
+</pre>
+</div>
+
+<p>
+Note that we are building two closely related datasets in this step. I
+encourage you to be very granular in your Make targets but you don't
+have to go hog wild with a target for every little thing. It is ok to
+group closely related work.
+</p>
+
+<p>
+Just to drive home the workflow here:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">cp Makefile8 Makefile
+make clean
+make derived_data/power_gender_ranks.csv
+head derived_data/power_gender_ranks.csv
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">rm derived_data/*
+rm logs/*
+Rscript deduplicate.R powers
+Rscript deduplicate.R character-data
+Rscript make_gender_dataset.R
+Rscript make_power_gender_dataset.R
+power,gender,total,p,rank
+superhuman_strength,female,15143,0.0826784652974972,1
+flight,female,15143,0.05679191705738625,2
+superhuman_durability,female,15143,0.05507495212309318,3
+superhuman_stamina,female,15143,0.04893350062735257,4
+superhuman_agility,female,15143,0.04015056461731493,5
+immortality,female,15143,0.03836756257016443,6
+superhuman_speed,female,15143,0.0339430760087169,7
+divine_empowerment,female,15143,0.026150696691540645,8
+superhuman_reflexes,female,15143,0.023377137951528758,9
+</pre>
+</div>
+
+<p>
+Note how cavalierly we're deleting all of our intermediate work. We
+are confident because of the way we're working on this data that we
+can reproduce our results.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org45051b2" class="outline-2">
+<h2 id="org45051b2"><span class="section-number-2">9</span> Figures</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+It should be relatively clear what the story is here, but let's add a
+figure to our workflow.
+</p>
+
+<p>
+Again, start with the Makefile. 
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Makefile">PHONY: clean
+
+clean:
+        rm derived_data/*
+        rm logs/*
+        rm figures/*
+
+derived_data/deduplicated_%.csv logs/deduplication_%.csv:\
+  source_data/%.csv deduplicate.R
+        Rscript deduplicate.R $*
+
+derived_data/gender_data.csv: derived_data/deduplicated_character-data.csv make_gender_dataset.R
+        Rscript make_gender_dataset.R
+
+derived_data/power_gender_data.csv derived_data/power_gender_ranks.csv: derived_data/deduplicated_powers.csv derived_data/gender_data.csv make_power_gender_dataset.R
+        Rscript make_power_gender_dataset.R
+
+figures/power_gender_rank.png: figure_power_gender_rank.R derived_data/power_gender_ranks.csv
+        Rscript figure_power_gender_rank.R
+</pre>
+</div>
+
+<p>
+Note that I've added an `rm figures/*` to the Makefile clean
+task. Always think about cleaning up after yourself.
+</p>
+
+<p>
+And the code:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #1e90ff;">library</span>(tidyverse);
+<span style="color: #1e90ff;">library</span>(ggplot2);
+<span style="color: #1e90ff;">source</span>(<span style="color: #ffa07a;">"utils.R"</span>)
+
+<span style="color: #00ff7f;">gender_to_x</span> <span style="color: #1e90ff;">&lt;-</span> <span style="color: #20b2aa; font-weight: bold;">function</span>(g){
+    x=c(<span style="color: #ffa07a;">"male"</span>=1,<span style="color: #ffa07a;">"female"</span>=-1)
+    x[g];
+}
+
+
+
+ranked_gendered <span style="color: #1e90ff;">&lt;-</span> read_csv(<span style="color: #ffa07a;">"derived_data/power_gender_ranks.csv"</span>);
+
+ranked_gendered <span style="color: #1e90ff;">&lt;-</span> ranked_gendered <span style="color: #1e90ff;">%&gt;%</span> filter(rank&lt;=20) <span style="color: #1e90ff;">%&gt;%</span> select(-p,-total);
+
+power_order <span style="color: #1e90ff;">&lt;-</span> ranked_gendered <span style="color: #1e90ff;">%&gt;%</span> group_by(power) <span style="color: #1e90ff;">%&gt;%</span> summarize(mr = mean(rank)) <span style="color: #1e90ff;">%&gt;%</span>
+    arrange(mr) <span style="color: #1e90ff;">%&gt;%</span> <span style="color: #f5f5f5; background-color: #333333;">`[[`</span>(<span style="color: #ffa07a;">"power"</span>)
+
+ranked_gendered$power <span style="color: #1e90ff;">&lt;-</span> factor(ranked_gendered$power,power_order);
+
+male <span style="color: #1e90ff;">&lt;-</span> ranked_gendered <span style="color: #1e90ff;">%&gt;%</span> filter(gender==<span style="color: #ffa07a;">"male"</span>) <span style="color: #1e90ff;">%&gt;%</span>
+    rename(male_rank=rank);
+female <span style="color: #1e90ff;">&lt;-</span> ranked_gendered <span style="color: #1e90ff;">%&gt;%</span> filter(gender==<span style="color: #ffa07a;">"female"</span>) <span style="color: #1e90ff;">%&gt;%</span>
+    rename(female_rank=rank);
+
+line_data_male <span style="color: #1e90ff;">&lt;-</span> male <span style="color: #1e90ff;">%&gt;%</span> left_join(female, by=<span style="color: #ffa07a;">"power"</span>) <span style="color: #1e90ff;">%&gt;%</span>
+    select(-gender.x, -gender.y);
+line_data_female <span style="color: #1e90ff;">&lt;-</span> male <span style="color: #1e90ff;">%&gt;%</span> right_join(female, by=<span style="color: #ffa07a;">"power"</span>) <span style="color: #1e90ff;">%&gt;%</span>
+    select(-gender.x, -gender.y);
+
+line_data <span style="color: #1e90ff;">&lt;-</span> rbind(line_data_male, line_data_female) <span style="color: #1e90ff;">%&gt;%</span> distinct() <span style="color: #1e90ff;">%&gt;%</span>
+    mutate(male_rank=replace_na(male_rank,21),
+           female_rank=replace_na(female_rank,21));
+
+the_plot <span style="color: #1e90ff;">&lt;-</span> ggplot(ranked_gendered) +
+    geom_rect(aes(xmin=gender_to_x(gender)-0.5,
+              xmax=gender_to_x(gender)+0.5,
+              ymin=rank-0.45,
+              ymax=rank+0.45,
+              fill=power),
+              show.legend = <span style="color: #9370db;">FALSE</span>) +
+    geom_text(aes(x=gender_to_x(gender),
+                  y=rank,
+                  label=power)) +
+    geom_segment(data=line_data,aes(x=-0.5,xend=0.5,
+                            y=female_rank,
+                            yend=male_rank,
+                            color=power),
+                 show.legend = <span style="color: #9370db;">FALSE</span>) +
+    ylim(0,21) +
+    scale_y_reverse(breaks = 1:20) +
+    scale_x_continuous(breaks=c(-1,1),
+                       labels=c(<span style="color: #ffa07a;">"Female"</span>,<span style="color: #ffa07a;">"Male"</span>)) + 
+    labs(x=<span style="color: #ffa07a;">"Sex Presentation"</span>,y=<span style="color: #ffa07a;">"Rank"</span>, title=<span style="color: #ffa07a;">"Are superpowers distributed differently by presented sex?"</span>);
+
+ensure_directory(<span style="color: #ffa07a;">"figures"</span>);
+
+ggsave(<span style="color: #ffa07a;">"figures/power_gender_rank.png"</span>, the_plot);
+</pre>
+</div>
+
+<p>
+In this R listing I've defined some local functions that are only
+useful here. We don't need to put these in utils. This helps people
+understand the usefulness of the function and limits their cognitive
+burdens.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">cp Makefile9 Makefile
+make clean
+make figures/power_gender_rank.png
+ls -lath figures/power_gender_rank.png
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">rm derived_data/*
+rm logs/*
+rm figures/*
+Rscript deduplicate.R powers
+Rscript deduplicate.R character-data
+Rscript make_gender_dataset.R
+Rscript make_power_gender_dataset.R
+Rscript figure_power_gender_rank.R
+-rw-r--r-- 1 toups toups 406K Sep 22 12:29 figures/power_gender_rank.png
+</pre>
+</div>
+
+
+<div class="figure">
+<p><img src="./figures/power_gender_rank.png" alt="power_gender_rank.png" />
+</p>
+</div>
+
+<p>
+Check out - because we clean before we run our task, Make shows us all
+the intermediate tasks it had to do on its way to our figure.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org86d4268" class="outline-2">
+<h2 id="org86d4268"><span class="section-number-2">10</span> Even without Clean Make has Our Back.</h2>
+<div class="outline-text-2" id="text-10">
+<p>
+Suppose after a long analysis of comic book data I realize that
+essentially <span class="underline">all</span> the characters tagged as "genderless" present as
+"male," use male pronouns etc, even if they are robots.
+</p>
+
+<p>
+That would entail a modification to my `make<sub>gender</sub><sub>dataset.R</sub>` script
+like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #1e90ff;">library</span>(tidyverse);
+<span style="color: #1e90ff;">source</span>(<span style="color: #ffa07a;">"utils.R"</span>);
+
+good_values = str_split(<span style="color: #ffa07a;">"intersex non_binary genderless female male"</span>, <span style="color: #ffa07a;">" "</span>, simplify=<span style="color: #9370db;">TRUE</span>);
+
+data <span style="color: #1e90ff;">&lt;-</span> read_csv(<span style="color: #ffa07a;">"derived_data/deduplicated_character-data.csv"</span>) <span style="color: #1e90ff;">%&gt;%</span>
+    filter(property_name==<span style="color: #ffa07a;">"gender"</span>) <span style="color: #1e90ff;">%&gt;%</span>
+    filter(value <span style="color: #1e90ff;">%in%</span> good_values) <span style="color: #1e90ff;">%&gt;%</span>
+    mutate(value={
+        value[value==<span style="color: #ffa07a;">"genderless"</span>] <span style="color: #1e90ff;">&lt;-</span> <span style="color: #ffa07a;">"male"</span>;
+        value
+    }) <span style="color: #1e90ff;">%&gt;%</span>
+    write_csv(<span style="color: #ffa07a;">"derived_data/gender_data.csv"</span>);
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">cp make_gender_dataset_modification.R make_gender_dataset.R
+make figures/power_gender_rank.png
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">Rscript make_gender_dataset.R
+Rscript make_power_gender_dataset.R
+Rscript figure_power_gender_rank.R
+</pre>
+</div>
+
+<p>
+See! Make has realized that we changed a dependency for
+<code>gendered_data.csv</code> and thus that we needed to rebuild the
+intermediate data set.
+</p>
+
+<p>
+If you document your dependencies carefully between steps you never
+need to worry about whether your final analysis is out of date.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org719e3cb" class="outline-2">
+<h2 id="org719e3cb"><span class="section-number-2">11</span> Make problems to watch out for</h2>
+<div class="outline-text-2" id="text-11">
+<p>
+Make is finicky. It needs the recipe lines to be tab-indented. Not 8
+spaces. Not 4 spaces. A tab.
+</p>
+
+<p>
+Targets and dependencies must be listed on the same logical line but
+you can spread a logical line over multiple physical lines by
+"escaping" the newline with a <code>\</code> character. This slash, however, must
+be immediately before the newline. If you put a space after it, the
+build will break.
+</p>
+
+<p>
+We didn't discuss the evaluation model for make here explicitly but
+use that idea to debug your makefiles.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc179024" class="outline-2">
+<h2 id="orgc179024"><span class="section-number-2">12</span> Conclusions</h2>
+<div class="outline-text-2" id="text-12">
+<p>
+By now the idea should be clear: Make automates the build process for
+your data analysis. It allows and encourages you to break your work
+into small, atomic, steps and to document how those steps
+inter-relate. Organizing your work this way would be a good idea
+<span class="underline">anyway</span> but if you document this material in your Makefile then make
+will also <span class="underline">automate</span> your build process in an intelligent way. By
+looking at file modification times it can tell which pieces need to be
+rebuilt when and otherwise skips work that doesn't need to be redone.
+</p>
+
+<p>
+This makes your data science clearer, easier to understand, and more
+reproducible.
+</p>
+
+<p>
+Artifacts are any objects which your analysis <span class="underline">generates</span>. These
+should never go into your git repository and should be deleted by a
+`clean` task. You should periodically run `make clean` to ensure that
+your build process still works. 
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: toups</p>
+<p class="date">Created: 2021-09-22 Wed 12:29</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

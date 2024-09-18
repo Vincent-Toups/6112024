@@ -1,0 +1,647 @@
+* The Problem
+
+By now we know enough to be dangerous. If you are following along with
+your own project you might even have an RMarkdown file or a set of
+scripts that generate cleaned data, tables, figures or other
+results. Things are probably beginning to feel a little messy. 
+
+The typical answer given for how to tame this mess is to use notebook
+style development but frankly this answer is a bad one.
+
+1. it is monolithic and linear
+2. it introduces complicated dependencies between cells
+
+Large computational steps occur in early cells and hang around
+forever. It isn't so easy to track changes in such a live session and
+to make sure that the results propogate throughout the document in an
+appropriate way.
+
+The linearity of the document is also misleading - data science
+involves lots of side paths down which we go and return. You neither
+want these in a main document nor do you want to throw them away.
+
+One solution might be to split your work into _many_ notebooks but
+what about data shared between them? 
+
+* The Solution
+
+Artifacts and build systems. A figure, a document, a table, a cleaned
+or reformatted data set, these are all examples of _artifacts_. The
+key idea is that an artifact is the result of some code which produces
+it and the data required for that production.
+
+Read through our example notebook from lecture six. Here is a snippet:
+
+#+begin_src markdown
+
+Let's standardize our character data and deduplicate the results.
+
+```{r}
+
+df <- read_csv("source_data/character-data.csv");
+
+names(df) <- simplify_strings(names(df)); ## simplify our column names
+                                          ## as well
+
+deduplicated <- df %>% mutate(across(everything(), simplify_strings)) %>%
+    distinct();
+print(sprintf("Before simplification and deduplication: %d, after %d (%0.2f %% decrease)",
+              nrow(df),
+              nrow(deduplicated),
+              100-100*nrow(deduplicated)/nrow(df)));
+```
+
+Let's do more analysis now...
+
+#+end_src
+
+In the midst of a RMarkdown document it can be obscure, what we is
+happening here is actually a little unit of computation: data is being
+loaded, a specific, atomic modification is happening, we characterize
+the result, and then we're finished.
+
+It would be better to put this in a standalone script:
+
+#+CAPTION: deduplicate.R
+#+begin_src R
+  library(tidyverse);
+  source("utils.R");
+
+  df <- read_csv("source_data/character-data.csv");
+  
+  names(df) <- simplify_strings(names(df)); 
+
+  deduplicated <- df %>% mutate(across(everything(), simplify_strings)) %>%
+      distinct();
+  print(sprintf("Before simplification and deduplication: %d, after %d (%0.2f %% decrease)",
+                nrow(df),
+                nrow(deduplicated),
+                100-100*nrow(deduplicated)/nrow(df)));
+#+end_src
+
+This is already an improvement. Inside another script or notebook file
+we could simply say:
+
+#+begin_src R
+  source("deduplicate.R")
+
+  ## other stuff that depends on `deduplicated`
+#+end_src
+
+The benefits of this should be obvious: we now have just one place
+where we do the cleanup step. If we fix an error there, it will
+automatically be reflected in any other script that sources the
+deduplication step.
+
+But this approach may cause other problems, left as is. For one thing,
+sourceing such scripts pollutes the global namespace. We might
+accidentally source the same script multiple times and cause problems
+(not all tidying steps are idempotent). And how do we represent
+dependencies between tidying steps? Maybe a step requires both the
+deduplicated data and the original input. Whose responsibility is it
+to load that data - the deduplicate script or the host? What happens
+if the deduplicate script doesn't need it anymore but the host does?
+
+Another issue is that some step represented by a script might take a
+very long time. If we source it at each point we use it then all of
+our scripts are slow.
+
+* Enter The Disk
+
+The solution to this process is for each individual step in the
+analysis to read its dependencies from the disk and write its output
+to the disk. Then steps can be totally atomic. They are run by
+themselves with an empty interpreter. The depend on no global state
+and leave no global state behind.
+
+You could replace every place you say ~source("some-step.R")~ with a
+~read_csv("some-artifact.csv")~ but you still might get bitten by the
+fact that artifacts get out of sync with one another. Script A might
+depend on artifact B but you might forget to re-run it after Artifact
+B has changed. 
+
+A build system is the technology that connects your artifacts together
+for you, letting you easily understand which things depend on which
+and make sure they are up to date.
+
+* Using a Makefile
+
+Make is a linux utility which provides a build system. It is a
+complicated tool but in this class we're going to use the simplest
+features only.
+
+Like every other tool we're learning in this course we need to
+understand a Makefile as a sort of program and understand its
+evaluation rules.
+
+#+INCLUDE: "Makefile-skeleton" src Makefile
+
+Here we see one of the fundamental units of a Makefile. A target, its
+dependencies, and the recipe that produces the target. Let's refactor
+our cleanup step.
+
+First, we pull out our utility definitions into a ~utils.R~:
+
+#+CAPTION: utils.R
+#+begin_src R 
+library(tidyverse); 
+
+simplify_strings <- function(s){
+    s <- str_to_lower(s);
+    s <- str_trim(s);
+    s <- str_replace_all(s,"[^a-z]+","_")
+    s
+}
+
+ensure_directory <- function(directory){
+    if(!dir.exist(directory)){
+        dir.create(directory);
+    }
+}
+
+#+end_src
+
+Our tidying step can stay mostly the same but we need to save our
+results to disk at the end of the step:
+
+#+CAPTION: deduplicate.R
+#+begin_src R
+  library(tidyverse);
+  source("utils.R");
+
+  df <- read_csv("source_data/character-data.csv");
+  
+  names(df) <- simplify_strings(names(df)); 
+
+  deduplicated <- df %>% mutate(across(everything(), simplify_strings)) %>%
+      distinct();
+  print(sprintf("Before simplification and deduplication: %d, after %d (%0.2f %% decrease)",
+                nrow(df),
+                nrow(deduplicated),
+                100-100*nrow(deduplicated)/nrow(df)));
+
+  ensure_directory("derived_data");
+  write_csv(deduplicated, "derived_data/deduplicated.csv");
+  
+#+end_src
+
+And now we can put an entry in our Makefile;
+
+#+INCLUDE: "Makefile0" src Makefile
+
+Once we have such we can use Make to test whether it works.
+
+#+begin_src sh :results code :exports both
+
+cp Makefile0 Makefile
+cp utils0.R utils.R
+cp deduplicate0.R deduplicate.R 
+cp utils0.R utils.R
+
+make derived_data/deduplicated.csv
+head derived_data/deduplicated.csv
+
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+Rscript deduplicate.R
+[1] "Before simplification and deduplication: 696346, after 138483 (80.11 % decrease)"
+character,universe,property_name,value
+abraham_dusk,wildstorm_universe,real_name,abraham_dusk
+abraham_dusk,wildstorm_universe,main_alias,the_metropolitan
+abraham_dusk,wildstorm_universe,other_aliases,last_angel
+abraham_dusk,wildstorm_universe,affiliation,the_monarchy
+abraham_dusk,wildstorm_universe,base_of_operations,the_throne
+abraham_dusk,wildstorm_universe,alignment,good
+abraham_dusk,wildstorm_universe,identity,secret_identity
+abraham_dusk,wildstorm_universe,citizenship,american
+abraham_dusk,wildstorm_universe,marital_status,single
+#+end_src
+
+Make thus serves as a command line interface for our project. If you
+look in the makefile you can see the things our project can
+produce. You can also see what they depend on. To build something you
+just ask Make to do it for you.
+
+The true genius of Make doesn't shine through until we have more
+artifacts. Let's write a new one to clean up our power data in the
+same sort of way:
+
+#+CAPTION: Makefile1
+#+INCLUDE: "Makefile1" src Makefile
+
+Note that these two artifacts don't depend on one another at all. If
+we modify or delete either of them, Make will rebuild it for us but
+the other codepath is not touched. Already an example of an
+improvement over the "rerun whole notebook" method.
+
+We can and should feel free to delete any and all derived artifacts
+secure in the knowledge that we can regenerate them with make:
+
+#+begin_src sh :results code :exports both 
+  rm derived_data/deduplicated.csv
+  make derived_data/deduplicated.csv
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+Rscript deduplicate.R
+[1] "Before simplification and deduplication: 696346, after 138483 (80.11 % decrease)"
+#+end_src
+
+* Handling Multiple Targets Per Recipe
+
+Hey: we're just printing this important information about rows
+lost. Why not record it to disk as its own artifact so that we can
+reference it later?
+
+Add the following to your `utils.R`
+
+#+begin_src R
+make_logger <- function(filename, sep="\n"){
+    if(file.exists(filename)){
+        file.remote(filename);
+    }
+    function(...){
+        text <- sprintf(...);
+        cat(text, file=filename, sep=sep, append=T);
+    }
+}
+#+end_src
+
+We can use this to log stuff out to a file during our operations. So
+our new deduplicate looks like this:
+
+#+CAPTION deduplicate.R
+#+begin_src R
+library(tidyverse);
+source("utils.R");
+
+ensure_directory("logs");
+
+log <- make_logger("logs/deduplication-notes.md");
+
+df <- read_csv("source_data/character-data.csv");
+
+names(df) <- simplify_strings(names(df)); 
+
+deduplicated <- df %>% mutate(across(everything(), simplify_strings)) %>%
+    distinct();
+log("Before simplification and deduplication: %d, after %d (%0.2f %% decrease)",
+              nrow(df),
+              nrow(deduplicated),
+              100-100*nrow(deduplicated)/nrow(df));
+
+ensure_directory("derived_data");
+write_csv(deduplicated, "derived_data/deduplicated.csv");
+#+end_src
+
+Now we modify our Makefile to reflect that our recipe produces _two_
+artifacts.
+
+#+CAPTION: Makefile
+#+begin_src Makefile
+derived_data/deduplicated.csv logs/deduplication-notes.md:\
+ deduplicate.R source_data/character-data.csv utils.R
+	Rscript deduplicate.R
+
+derived_data/deduplicated_powers.csv: deduplicate_powers.R\
+ utils.R\
+ source_data/powers.csv
+	Rscript deduplicate_powers.R
+#+end_src
+
+Let's try this out:
+
+#+begin_src sh :results code :exports both
+  cp deduplicate1.R deduplicate.R
+  cp utils1.R utils.R
+  cp Makefile2 Makefile
+  rm -f logs/deduplication-notes.md
+  make logs/deduplication-notes.md
+  cat logs/deduplication-notes.md
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+Rscript deduplicate.R
+Before simplification and deduplication: 696346, after 138483 (80.11 % decrease)
+#+end_src
+
+We're kind of duplicating code here, since the same snippet suffices
+to tidy our power data and our other data set. Code reuse is good, so
+consider:
+
+#+CAPTION: deduplicate.R
+#+begin_src R
+library(tidyverse);
+source("utils.R");
+
+args <- commandArgs(trailingOnly=TRUE);
+
+input_sd <- args[[1]];
+
+ensure_directory("logs");
+
+log <- make_logger(sprintf("logs/deduplication-%s.md", input_sd));
+
+df <- read_csv(sprintf("source_data/%s.csv", input_sd));
+
+names(df) <- simplify_strings(names(df)); 
+
+deduplicated <- df %>% mutate(across(everything(), simplify_strings)) %>%
+    distinct();
+log("Before simplification and deduplication of %s: %d, after %d (%0.2f %% decrease)",
+    input_sd,
+    nrow(df),
+    nrow(deduplicated),
+    100-100*nrow(deduplicated)/nrow(df));
+
+ensure_directory("derived_data");
+write_csv(deduplicated, sprintf("derived_data/deduplicated-%s.csv", input_sd));
+#+end_src
+
+And the makefile:
+
+#+CAPTION: Makefile
+#+begin_src Makefile
+derived_data/deduplicated-character-data.csv logs/deduplication-character-data.md:\
+ deduplicate.R source_data/character-data.csv utils.R
+	Rscript deduplicate.R character-data
+
+derived_data/deduplicated-powers.csv logs/deduplication-powers.md:\
+ deduplicate.R source_data/powers.csv utils.R
+	Rscript deduplicate.R powers
+#+end_src
+
+Now the same code serves to deduplicate different data sets.
+
+#+begin_src sh :results code :exports both
+  cp deduplicate2.R deduplicate.R
+  cp Makefile3 Makefile
+  rm derived_data/*
+  rm logs/*
+  make derived_data/deduplicated_powers.csv
+  head derived_data/deduplicated_powers.csv
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+#+end_src
+
+Advanced note:
+
+#+CAPTION: Alternative:
+#+begin_src Makefile
+
+derived_data/deduplicated_%.csv logs/deduplication_%.csv:\
+  source_data/%.csv deduplicate.R
+	Rscript deduplicate.R $*
+#+end_src
+
+Now we can deduplicate any file which "makes sense" with one
+target. On the other hand, this is a downgrade in terms of
+understandability. We can no longer tell by looking at the Makefile
+which source data makes sense to deduplicate this way.
+
+Unless you really have a lot of targets that fit one pattern I
+recommend being explicit. People will be able to figure out which
+targets are appropriate here by looking at what other products are
+mentioned in other targets' dependencies but it can get quite abstract
+and complicated quite fast. 
+
+I recommend using patterns like this lightly. 
+
+* PHONY targets
+
+One of the things you'll be graded on is whether your repository
+builds "fresh" from a checkout. Since our gitignore files will include
+things like:
+
+#+begin_src gitignore
+derived_data/*
+logs/*
+figures/*
+#+end_src
+
+When I check out your repository for the first time I shouldn't have
+any of your intermediate artifacts. You'll want to bring your
+repository into this state from time to time to test everything out.
+
+We can do this with Make like this:
+
+#+CAPTION: A clean target
+#+INCLUDE "Makefile5" src Makefile
+
+Let's try it out.
+
+#+begin_src sh :results code :exports both
+  cp Makefile5 Makefile
+  cp deduplicate2.R deduplicate.R
+  cp utils1.R utils.R
+
+  make clean
+  make derived_data/deduplicated_powers.csv
+  cat logs/deduplication_powers.md
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+rm derived_data/*
+rm logs/*
+Rscript deduplicate.R powers
+Before simplification and deduplication of powers: 52663, after 50937 (3.28 % decrease)
+#+end_src
+
+* clean and purge
+
+You can have as many dummy targets as you want. Some people will have
+data analysis steps that take a really long time and they may want to
+have a clean-like step that doesn't kill the results of these files
+for local testing.
+
+Some people may be downloading their data sets in their Makefile and
+not want to delete those in every clean.
+
+#+CAPTION: an example
+#+INCLUDE: "Makefile6" src Makefile
+
+* Deeper Dependencies
+
+So we've produce a few artifacts, let's produce some more to
+demonstrate how Make really makes life easier. We did quite a lot in
+the last lecture, but let's pick a narrow focus: we want to produce a
+cleaned up data set with just the gender data in it. 
+
+I like Make so much that I often write my _target_ first:
+
+#+INCLUDE: "Makefile7" src Makefile
+
+And now we can write our script
+
+#+INCLUDE: "make_gender_dataset.R" src R
+
+And test it:
+
+#+begin_src sh :results code :exports both
+  cp Makefile7 Makefile
+  make clean
+  make derived_data/gender_data.csv
+#+end_src
+
+Now let's add an additional step to our Makefile for joining our power
+data to our gender data.
+
+#+INCLUDE: "Makefile8" src Makefile
+
+The code looks like this:
+
+#+INCLUDE: "make_power_gender_dataset.R" src R
+
+Note that we are building two closely related datasets in this step. I
+encourage you to be very granular in your Make targets but you don't
+have to go hog wild with a target for every little thing. It is ok to
+group closely related work.
+
+Just to drive home the workflow here:
+
+#+begin_src sh :results code :exports both
+  cp Makefile8 Makefile
+  make clean
+  make derived_data/power_gender_ranks.csv
+  head derived_data/power_gender_ranks.csv
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+rm derived_data/*
+rm logs/*
+Rscript deduplicate.R powers
+Rscript deduplicate.R character-data
+Rscript make_gender_dataset.R
+Rscript make_power_gender_dataset.R
+power,gender,total,p,rank
+superhuman_strength,female,15143,0.0826784652974972,1
+flight,female,15143,0.05679191705738625,2
+superhuman_durability,female,15143,0.05507495212309318,3
+superhuman_stamina,female,15143,0.04893350062735257,4
+superhuman_agility,female,15143,0.04015056461731493,5
+immortality,female,15143,0.03836756257016443,6
+superhuman_speed,female,15143,0.0339430760087169,7
+divine_empowerment,female,15143,0.026150696691540645,8
+superhuman_reflexes,female,15143,0.023377137951528758,9
+#+end_src
+
+Note how cavalierly we're deleting all of our intermediate work. We
+are confident because of the way we're working on this data that we
+can reproduce our results.
+
+* Figures
+
+It should be relatively clear what the story is here, but let's add a
+figure to our workflow.
+
+Again, start with the Makefile. 
+
+#+INCLUDE: "Makefile9" src Makefile
+
+Note that I've added an `rm figures/*` to the Makefile clean
+task. Always think about cleaning up after yourself.
+
+And the code:
+
+#+INCLUDE: "figure_power_gender_rank.R" src R
+
+In this R listing I've defined some local functions that are only
+useful here. We don't need to put these in utils. This helps people
+understand the usefulness of the function and limits their cognitive
+burdens.
+
+#+begin_src sh :results code :exports both
+  cp Makefile9 Makefile
+  make clean
+  make figures/power_gender_rank.png
+  ls -lath figures/power_gender_rank.png
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+rm derived_data/*
+rm logs/*
+rm figures/*
+Rscript deduplicate.R powers
+Rscript deduplicate.R character-data
+Rscript make_gender_dataset.R
+Rscript make_power_gender_dataset.R
+Rscript figure_power_gender_rank.R
+-rw-r--r-- 1 toups toups 402K Sep 22 12:12 figures/power_gender_rank.png
+#+end_src
+
+[[./figures/power_gender_rank.png]]
+
+Check out - because we clean before we run our task, Make shows us all
+the intermediate tasks it had to do on its way to our figure.
+
+* Even without Clean Make has Our Back.
+
+Suppose after a long analysis of comic book data I realize that
+essentially _all_ the characters tagged as "genderless" present as
+"male," use male pronouns etc, even if they are robots.
+
+That would entail a modification to my `make_gender_dataset.R` script
+like this:
+
+#+INCLUDE: "make_gender_dataset_modification.R" src R
+
+#+begin_src sh :results code :exports both
+  cp make_gender_dataset_modification.R make_gender_dataset.R
+  make figures/power_gender_rank.png
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+Rscript make_gender_dataset.R
+Rscript make_power_gender_dataset.R
+Rscript figure_power_gender_rank.R
+#+end_src
+
+See! Make has realized that we changed a dependency for
+~gendered_data.csv~ and thus that we needed to rebuild the
+intermediate data set.
+
+If you document your dependencies carefully between steps you never
+need to worry about whether your final analysis is out of date.
+
+* Make problems to watch out for
+
+Make is finicky. It needs the recipe lines to be tab-indented. Not 8
+spaces. Not 4 spaces. A tab.
+
+Targets and dependencies must be listed on the same logical line but
+you can spread a logical line over multiple physical lines by
+"escaping" the newline with a ~\~ character. This slash, however, must
+be immediately before the newline. If you put a space after it, the
+build will break.
+
+We didn't discuss the evaluation model for make here explicitly but
+use that idea to debug your makefiles.
+
+* Conclusions
+
+By now the idea should be clear: Make automates the build process for
+your data analysis. It allows and encourages you to break your work
+into small, atomic, steps and to document how those steps
+inter-relate. Organizing your work this way would be a good idea
+_anyway_ but if you document this material in your Makefile then make
+will also _automate_ your build process in an intelligent way. By
+looking at file modification times it can tell which pieces need to be
+rebuilt when and otherwise skips work that doesn't need to be redone.
+
+This makes your data science clearer, easier to understand, and more
+reproducible.
+
+Artifacts are any objects which your analysis _generates_. These
+should never go into your git repository and should be deleted by a
+`clean` task. You should periodically run `make clean` to ensure that
+your build process still works. 

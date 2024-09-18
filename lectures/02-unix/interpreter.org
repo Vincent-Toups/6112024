@@ -1,0 +1,12 @@
+0. read the string from the user and call it the input
+1. tokenize the input by breaking apart on spaces 
+1.a. look for shell variables by finding "$" characters, look up the values
+     stored in those variables and put them into the command
+2. look at first token and decide what to do
+   a. decide if the first token is an executable file on the computer
+      by looking in each location in the path variable PATH
+      if it is run that with all the other tokens as its command line arguments
+   b. if the first token "looks like a variable definition" NAME=VAL then 
+      add that variable to the environment (or modify the variable if it exists)
+   c. if we can't figure out what to do, complain about it 
+

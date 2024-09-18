@@ -1,0 +1,6 @@
+1. "numbers" evaluate to numbers
+1.b when characters are between "" then evaluate to a string of those characters.
+2. algebraic expressions are evaluated on the numbers which we get by evaluating numeric terms.
+3. the function denoted by `<-` saves an association between the unevaluated name on the left and the value on the right.
+4. if we see something like a name we look in the env and if we find it that is the value (it is an error if there is no name like that in the environment)
+5. when there is a name followed directly by a set of expressions in () separated by commas, look up the name, if it is a function, apply the function to the values in the () (called the argument list)
