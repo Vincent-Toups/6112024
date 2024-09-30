@@ -1,0 +1,1001 @@
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="./style.css"/>
+#+TITLE: Becoming an Expert Git User
+* About These Notes
+
+Today's lecture really is a continuous narrative, so we're going to
+follow along with my notes rather than use a slide deck.
+
+* Git
+
+1. The most commonly used version control system in the world.
+2. Among the most powerful.
+3. The most important tool you can learn in this class.
+
+Git, when used properly, gives you total control over the history of
+your work combined with excellent tools for collaboration. 
+
+Stop thinking of your project as "this code". Your project is the git
+repository.
+
+Never name files or functions "v1" "v2" "v3" etc. Just let git manage
+history and versions for you.
+
+* Git Concepts
+
+** diff and patch
+[[./images/diff-patch.png]]
+
+Clear our temporary directory.
+
+#+begin_src sh :results code :exports both
+rm -rf /tmp/example
+mkdir /tmp/example
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+#+end_src
+
+Create two similar files.
+
+#+begin_src sh :results code :exports both :dir /tmp/example :export both
+
+cat << EOF > filev1.txt
+This is a file I'm using as
+an example for a presentation.
+While git is the most common version control
+system, it may not be the most powerful.
+
+That distinction goes to Darcs.
+EOF
+
+cat << EOF > filev2.txt
+This is a file we are using as
+an example for a presentation.
+While git is the most common version 
+control system, it may not be the 
+most powerful.
+
+That distinction goes to Pijul.
+EOF
+
+diff -u filev1.txt filev2.txt | cat
+
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+--- filev1.txt	2021-09-28 14:01:48.440378490 -0400
++++ filev2.txt	2021-09-28 14:01:48.440378490 -0400
+@@ -1,6 +1,7 @@
+-This is a file I'm using as
++This is a file we are using as
+ an example for a presentation.
+-While git is the most common version control
+-system, it may not be the most powerful.
++While git is the most common version 
++control system, it may not be the 
++most powerful.
+ 
+-That distinction goes to Darcs.
++That distinction goes to Pijul.
+#+end_src
+
+That is, diff takes two files which are similar and returns a "patch"
+which is a set of instructions for converting one file into another.
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+
+diff -u filev1.txt filev2.txt > the-patch
+patch -o filev2-from-patch.txt < the-patch
+
+cat filev2-from-patch.txt 
+
+#+end_src
+
+#+RESULTS:
+#+begin_export html
+patching file filev2-from-patch.txt (read from filev1.txt)
+This is a file we are using as
+an example for a presentation.
+While git is the most common version 
+control system, it may not be the 
+most powerful.
+
+That distinction goes to Pijul.
+#+end_export
+
+Naturally the difference between `filev2-from-patch` and `filev2` is
+the empty diff.
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+diff -u filev2-from-patch filev2 | cat
+#+end_src
+
+#+RESULTS:
+#+begin_export html
+#+end_export
+
+* The Big Idea
+
+Your project is a chain of patches:
+
+* `git status` and Three Things in your Head
+
+[[./images/rule-of-three.png]]
+
+1. The Branch HEAD
+2. The Staging Area
+3. The Working Copy
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+rm -rf *
+git init
+git status
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+Reinitialized existing Git repository in /tmp/example/.git/
+On branch master
+
+No commits yet
+
+nothing to commit (create/copy files and use "git add" to track)
+#+end_src
+
+* Let's make some commits.
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+
+cat << EOF > README.md
+About
+=====
+
+This is an example of a git repository.
+
+EOF
+
+git status
+
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+On branch master
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	README.md
+
+nothing added to commit but untracked files present (use "git add" to track)
+#+end_src
+
+This is a little bit of a weird of a situation because we don't have
+any commits at all (this only happens when you have a new repo).
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git add README.md
+git commit -m "Initial commit."
+#+end_src
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git status
+#+end_src
+
+
+#+RESULTS:
+#+begin_src sh
+On branch master
+nothing to commit, working tree clean
+#+end_src
+
+
+* git diff
+
+Let's add some changes. (Note that we can append to a file with `>>`).
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+
+cat << EOF >> README.md
+Using git is fun - try saying
+
+   git log 
+   
+Or other stuff!
+EOF
+
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+#+end_src
+
+Now we can say 
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+
+git diff
+
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+diff --git a/README.md b/README.md
+index 56d7772..72dcade 100644
+--- a/README.md
++++ b/README.md
+@@ -3,3 +3,8 @@ About
+ 
+ This is an example of a git repository.
+ 
++Using git is fun - try saying
++
++   git log 
++   
++Or other stuff!
+#+end_src
+
+"git diff" tells us the difference between the working copy and the
+branch HEAD (but not the differences which are staged).
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git diff --stat
+#+end_src
+
+#+RESULTS:
+#+begin_export html
+ README.md | 5 +++++
+ 1 file changed, 5 insertions(+)
+#+end_export
+
+And 
+
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git status
+#+end_src
+
+#+RESULTS:
+#+begin_export html
+On branch master
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	modified:   README.md
+
+no changes added to commit (use "git add" and/or "git commit -a")
+#+end_export
+
+A readable description.
+
+* Branches, Merges and Rebases
+
+Branches have a HEAD. That is *almost* all a branch is, in the final
+analysis. A HEAD and some code which automatically moves the HEAD
+forward when you make a commit. Listing branches:
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git branch -l
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+,* master
+#+end_src
+
+Branches are *local* by default.
+
+If you are working collaboratively with other people, feel free to
+create as many local branches as you want. This is particularly useful
+when you are getting started with git. If you are a little concerned
+about something, create a branch before doing it.
+
+There are two ways to create a new branch:
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git branch experiment
+git status
+#+end_src
+
+#+RESULTS:
+#+begin_export html
+On branch master
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	modified:   README.md
+
+no changes added to commit (use "git add" and/or "git commit -a")
+#+end_export
+
+Note that the above creates a new branch but DOESN'T SWITCH TO IT!!
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git checkout -b experiment2
+git status
+#+end_src
+
+#+RESULTS:
+#+begin_export html
+M	README.md
+On branch experiment2
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	modified:   README.md
+
+no changes added to commit (use "git add" and/or "git commit -a")
+#+end_export
+
+Note we've switched to the experiment2 branch. 
+
+checkout (without -b) lets us check out other branches.
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git checkout master
+git status
+#+end_src
+
+#+RESULTS:
+#+begin_export html
+M	README.md
+On branch master
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	modified:   README.md
+
+no changes added to commit (use "git add" and/or "git commit -a")
+#+end_export
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git checkout experiment2
+#+end_src
+
+#+RESULTS:
+#+begin_export html
+M	README.md
+#+end_export
+
+Note that we can switch branches even if the working copy has changes.
+
+* Merge
+
+Let's make a commit. 
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git add README.md
+git commit -m "Extended README."
+#+end_src
+
+#+RESULTS:
+#+begin_export html
+[experiment2 94ea475] Extended README.
+ 1 file changed, 5 insertions(+)
+#+end_export
+
+A simple merge:
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git checkout master
+git merge experiment2
+git log -2 | cat
+#+end_src
+
+#+RESULTS:
+#+begin_export html
+Updating 4ac2b32..94ea475
+Fast-forward
+ README.md | 5 +++++
+ 1 file changed, 5 insertions(+)
+commit 94ea475ffb949f8e7703c019722f0de10a57372a
+Author: Vincent <Vincent Toups>
+Date:   Wed Sep 2 12:59:05 2020 -0400
+
+    Extended README.
+
+commit 4ac2b32b0b5d70d362decf6fcde5c06c270408b8
+Author: Vincent <Vincent Toups>
+Date:   Wed Sep 2 12:58:38 2020 -0400
+
+    Initial commit.
+#+end_export
+
+[[./images/basic-merge.png]]
+
+This is a "fast forward" merge - we just add each commit from
+experiment2 to master. Because experiment2 is based precisely on the
+same commit that the master branch is still on, this is a trivial
+operation.
+
+* Conflicts and Rebase
+
+Ther power of git is how it enables distributed development: two
+people on different machines (or even one person on different machines
+or just on different branches.)
+
+The simplest conflict is that one branch has "moved ahead" while
+another has done work based on a previous state.
+
+For now, imagine we are working on an experiment on a new branch,
+experiment3:
+
+[[./images/merge-vs-rebase.png]]
+
+We want to get the code represented by the orange commits. We could do
+it by merge or by rebase.
+
+The rebase is tidier and also more polite. It presumes that master is
+the authoritative version of the code and thus it should be that your
+experiment should look like it was made on the most recent version of
+master possible.
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git checkout -b experiment3
+git status
+#+end_src
+
+#+RESULTS:
+#+begin_export html
+On branch experiment3
+nothing to commit, working tree clean
+#+end_export
+
+A simple case where there are no textual conflicts.
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+cat << EOF > hello.md
+Hi everyone!
+EOF
+git add hello.md
+git commit -m "Added hello.md"
+#+end_src
+
+#+RESULTS:
+#+begin_export html
+[experiment3 bf1f3e8] Added hello.md
+ 1 file changed, 1 insertion(+)
+ create mode 100644 hello.md
+#+end_export
+
+Now let's make a commit on master without merging first. This
+simulates master "moving on".
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git checkout master
+cat << EOF > goodbye.md
+So long, everyone.
+EOF
+git add goodbye.md
+git commit -m "Added goodbye."
+#+end_src
+
+#+RESULTS:
+#+begin_export html
+[master 9c53a82] Added goodbye.
+ 1 file changed, 1 insertion(+)
+ create mode 100644 goodbye.md
+#+end_export
+
+Now we check out experiment3 and do some experiments.
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git checkout experiment3
+git checkout -b experiment3-merge
+git merge master
+#+end_src
+
+#+RESULTS:
+#+begin_export html
+Merge made by the 'recursive' strategy.
+ goodbye.md | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 goodbye.md
+#+end_export
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git log -3
+#+end_src
+
+#+RESULTS:
+#+begin_export html
+commit 4d6c37a3bf38fce703fb9b457ca7b59fa2170fe3
+Merge: bf1f3e8 9c53a82
+Author: Vincent <Vincent Toups>
+Date:   Wed Sep 2 12:59:18 2020 -0400
+
+    Merge branch 'master' into experiment3-merge
+
+commit 9c53a827ecc6e824b2841dc257a6f2e047ea873a
+Author: Vincent <Vincent Toups>
+Date:   Wed Sep 2 12:59:15 2020 -0400
+
+    Added goodbye.
+
+commit bf1f3e88d58eb282a4217a6cac49ad799cc47b6b
+Author: Vincent <Vincent Toups>
+Date:   Wed Sep 2 12:59:13 2020 -0400
+
+    Added hello.md
+#+end_export
+
+Note that we branched before the merge. We can get back to where we
+were before by checkout out experiment3.
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git checkout experiment3
+git checkout -b experiment-rebase
+git rebase master
+git log -3
+#+end_src
+
+#+RESULTS:
+#+begin_export html
+First, rewinding head to replay your work on top of it...
+Applying: Added hello.md
+commit 404739e43a11624493cbcc4274815ef8fb171955
+Author: Vincent <Vincent Toups>
+Date:   Wed Sep 2 12:59:13 2020 -0400
+
+    Added hello.md
+
+commit 9c53a827ecc6e824b2841dc257a6f2e047ea873a
+Author: Vincent <Vincent Toups>
+Date:   Wed Sep 2 12:59:15 2020 -0400
+
+    Added goodbye.
+
+commit 94ea475ffb949f8e7703c019722f0de10a57372a
+Author: Vincent <Vincent Toups>
+Date:   Wed Sep 2 12:59:05 2020 -0400
+
+    Extended README.
+#+end_export
+
+Note the absence of the merge. 
+
+Most of the time code flows back into master - this is the "canonical"
+version of the repository meant for things which are "really done."
+
+The nice thing about rebase is that it allows us to do a trivial merge
+of the feature branch into master - the feature branch now looks like
+it was based on the most recent version.
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git checkout master
+git merge experiment-rebase
+git log -3
+#+end_src
+
+#+RESULTS:
+#+begin_export html
+Updating 9c53a82..404739e
+Fast-forward
+ hello.md | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 hello.md
+commit 404739e43a11624493cbcc4274815ef8fb171955
+Author: Vincent <Vincent Toups>
+Date:   Wed Sep 2 12:59:13 2020 -0400
+
+    Added hello.md
+
+commit 9c53a827ecc6e824b2841dc257a6f2e047ea873a
+Author: Vincent <Vincent Toups>
+Date:   Wed Sep 2 12:59:15 2020 -0400
+
+    Added goodbye.
+
+commit 94ea475ffb949f8e7703c019722f0de10a57372a
+Author: Vincent <Vincent Toups>
+Date:   Wed Sep 2 12:59:05 2020 -0400
+
+    Extended README.
+#+end_export
+
+A "fast forward" merge doesn't create a merge commit.
+
+_Moral of the Story: Rebase when working on features. Save "merge" for
+ genuine mergers of truly different histories._
+
+* Detached Head State and Commit Ids
+
+[[./images/detached-head.png]]
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git log
+#+end_src
+
+Each commit has an id.
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git log | grep commit | cut -d' ' -f2
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+7773464516c13897b58298198642eb1bb8ded296
+b8256cefd795925e751e6e6c0c337e5196468db7
+81910e580bcf5aae8916d1e1d649b102bd817fca
+78cf118ecc0e025847e991f2be54939a4ef73fba
+
+#+end_src
+
+Let's detach our head.
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+commit_id=$(git log | grep commit | cut -d' ' -f2 | sed '3q;d')
+git checkout $commit_id
+git status
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+HEAD detached at 81910e5
+nothing to commit, working tree clean
+#+end_src
+
+You can always re-attach your head by checking out a branch (or
+creating a new one).
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git checkout -b new-head
+git status
+git log
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+On branch new-head
+nothing to commit, working tree clean
+commit 81910e580bcf5aae8916d1e1d649b102bd817fca
+Author: Vincent <Vincent Toups>
+Date:   Wed Sep 2 13:04:00 2020 -0400
+
+    Extended README.
+
+commit 78cf118ecc0e025847e991f2be54939a4ef73fba
+Author: Vincent <Vincent Toups>
+Date:   Wed Sep 2 13:04:00 2020 -0400
+
+    Initial commit.
+#+end_src
+
+* Resolving Conflicts
+
+Conflicts occur when two commits touch the same line of code. Git can
+tell you about them but it can't fix them for you. Let's simulate a
+conflict.
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git checkout master
+git checkout -b conflicts
+cat << EOF > conflicts-here.md
+This is a file
+it has some lines
+I hope nothing goes wrong!
+Perhaps it will, though.
+Best have a plan.
+EOF
+
+git add conflicts-here.md
+git commit -m "Added a new file."
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+[conflicts b4f5110] Added a new file.
+ 1 file changed, 5 insertions(+)
+ create mode 100644 conflicts-here.md
+#+end_src
+
+Now on master, let's create a conflict.
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git checkout master
+cat << EOF > conflicts-here.md
+This is a file
+it has many lines
+I hope nothing goes wrong!
+Perhaps it will, though.
+Best have a good plan.
+EOF
+
+git add conflicts-here.md
+git commit -m "Added a conflict file."
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+[master e60feb9] Added a conflict file.
+ 1 file changed, 5 insertions(+)
+ create mode 100644 conflicts-here.md
+#+end_src
+
+We are good citizens, so we go to the conflicts branch and try to
+rebase on master, which has moved ahead.
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git checkout conflicts
+# we'd usually run this
+# git rebase master
+# but since we are capturing the output in this document 
+# we need to be a litte tricky
+git rebase master > rebase-report
+cat rebase-report
+rm rebase-report
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+First, rewinding head to replay your work on top of it...
+Applying: Added a new file.
+Using index info to reconstruct a base tree...
+Falling back to patching base and 3-way merge...
+Auto-merging conflicts-here.md
+CONFLICT (add/add): Merge conflict in conflicts-here.md
+Patch failed at 0001 Added a new file.
+Use 'git am --show-current-patch' to see the failed patch
+
+Resolve all conflicts manually, mark them as resolved with
+"git add/rm <conflicted_files>", then run "git rebase --continue".
+You can instead skip this commit: run "git rebase --skip".
+To abort and get back to the state before "git rebase", run "git rebase --abort".
+
+#+end_src
+
+To resolve this we need to look at the file:
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+cat conflicts-here.md
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+This is a file
+<<<<<<< HEAD
+it has many lines
+I hope nothing goes wrong!
+Perhaps it will, though.
+Best have a good plan.
+=======
+it has some lines
+I hope nothing goes wrong!
+Perhaps it will, though.
+Best have a plan.
+>>>>>>> Added a new file.
+#+end_src
+
+Note that git has fused these files together and it expects us to edit
+it until we have the version we want.
+
+Let's assume our version is actually better, so we keep just the
+bottom part:
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+cat << EOF > conflicts-here.md
+it has some lines
+I hope nothing goes wrong!
+Perhaps it will, though.
+Best have a plan.
+EOF
+git add conflicts-here.md
+git rebase --continue 
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+Applying: Added a new file.
+#+end_src
+
+And that should finish the merge:
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git log -3
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+
+    Added a new file.
+
+commit e60feb99420bd5564d7aa02823933754f71f5153
+Author: Vincent <Vincent Toups>
+Date:   Wed Sep 2 13:32:28 2020 -0400
+
+    Added a conflict file.
+
+commit 7773464516c13897b58298198642eb1bb8ded296
+Author: Vincent <Vincent Toups>
+Date:   Wed Sep 2 13:04:00 2020 -0400
+
+    Added hello.md
+#+end_src
+
+* git commit ammend
+
+Sometimes we want to modify the last commit. This is ok as long as we
+haven't pushed yet. 
+
+In this case the commit message is now a little weird - its better to
+say we modified the file introduced by master.
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git commit --amend -m "Modified the conflicting file."
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+[conflicts f6479d8] Modified the conflicting file.
+ Date: Wed Sep 2 13:30:45 2020 -0400
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+#+end_src
+
+Now we just need to merge our conflicts branch onto master:
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git checkout master 
+git merge conflicts
+#+end_src
+
+* Remotes
+
+Git is distributed version control. Everyone who has a git repository
+is in principle working alone.
+
+`remotes` are the way git allows collaboration. Remotes have names
+which point to locations. By far the most common name for a remote is
+`origin` and that remote often points to github, though there are
+other services (bitbucket, gitlab). A remote can even be another
+directory on your computer.
+
+You list your remotes by saying:
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git remote -v
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+#+end_src
+
+But we don't have any. We all created our git repositories locally
+first and then associated them with a remote on github by saying something like 
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+# git remote add origin <some-url-at-github>
+#+end_src
+
+But its much more ordinary to have a remote configured for you via a
+clone:
+
+(Clear any previous workspaces)
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+rm -rf /tmp/workspace
+mkdir /tmp/workspace
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+#+end_src
+
+And in that directory:
+
+#+begin_src sh :results code :exports both :dir /tmp/workspace
+git clone git@github.com:Vincent-Toups/bios611-project1.git
+cd bios611-project1
+git remote -v
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+origin	git@github.com:Vincent-Toups/bios611-project1.git (fetch)
+origin	git@github.com:Vincent-Toups/bios611-project1.git (push)
+#+end_src
+
+Note that you may also clone from an `https` link. This specifies the
+way you intend to interact with the remote repository. Either is fine,
+but if you are using ssh keys it probably will be a `git@` style url.
+
+You can generally ignore this business of `fetch` and `push` remotes.
+
+* Remotes and Branches
+
+Usually you are trying to keep synchronized with a remote branch that
+someone else might be working on.
+
+When you clone a repo for the first time it automatically sets up
+associations between the local branches and the branches on the remote
+you cloned from.
+
+Thus commands like `git push`, `git pull` and `git fetch` know what
+branch to look for on the remote.
+
+* Don't pull
+
+You should understand `git pull` as meaning strictly "I am behind the
+remote and I've done nothing at all locally and I just want to get the
+latest commits."
+
+In any other situation you want to do the following:
+
+* the fetch/rebase pattern
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git fetch # grab the remote commits but don't change local branches
+git rebase origin/master # rebase master on origin master
+#+end_src
+
+* Interactive Staging And Small Commits
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+# git add -i # I have to demo this
+#+end_src
+
+The idea is to add _pieces_ of files to the staging area. This allows
+very granular commits even if you let the working copy get pretty
+messy.
+
+TODO: Fill this in.
+
+* Forks and Pull Requests
+
+You are unlikely to need to do this in this class, but you are likely
+to have to do it at some point.
+
+Conceptually, every `git clone` produces a fork. But on github and
+other places there is a more formal idea.
+
+[[./images/fork.png]]
+
+This clones the repo to your account. You can then clone it onto your
+computer and work on it. If you do work you think you might want to
+contribute back you should then do a pull request via github.
+
+But before you do that you would need to rebase your master branch on
+the original repository (this is the polite thing to do in most
+cases).
+
+This is a good way to see when you might have more than one remote.
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+cd /tmp
+rm -rf puff 
+git clone git@github.com:Vincent-Toups/puff.git
+cd puff
+git remote -v 
+#+end_src
+
+#+RESULTS:
+#+begin_src sh
+origin	git@github.com:Vincent-Toups/puff.git (fetch)
+origin	git@github.com:Vincent-Toups/puff.git (push)
+#+end_src
+
+Note that I've only got remotes for my copy of the repo.
+
+I can add a second remote for the "upstream" version of the project
+(that is, the place I cloned from).
+
+#+begin_src sh :results code :exports both :dir /tmp/puff
+git remote add upstream git@github.com:VincentToups/puff.git 
+#+end_src
+
+And then to rebase I'd say:
+
+#+begin_src sh :results code :exports both :dir /tmp/example
+git fetch upstream
+git rebase upstream/master 
+git push # up to my CSCC account.
+#+end_src
+
+And then I'd make a pull request.
+

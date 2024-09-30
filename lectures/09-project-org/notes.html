@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2023-10-09 Mon 19:13 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>&lrm;</title>
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+</head>
+<body>
+<div id="content" class="content">
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgc631fa4">1. How To Organize a Project</a></li>
+<li><a href="#org6d0ba2e">2. What the Final Project Will Be Like</a></li>
+<li><a href="#orgc115908">3. A Project User Story</a></li>
+<li><a href="#orga9eef32">4. How to Generate Your Results</a></li>
+<li><a href="#org6753f89">5. RMarkdown</a>
+<ul>
+<li><a href="#org4c351e6">5.1. Figures</a></li>
+<li><a href="#org8d92146">5.2. Text in Markdown</a></li>
+</ul>
+</li>
+<li><a href="#org72f2936">6. Latex</a></li>
+<li><a href="#org92d7f62">7. Handy Tricks</a></li>
+<li><a href="#org15b762e">8. Concluding Notes</a></li>
+<li><a href="#org96c5396">9. Demo of Ashar Repo</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgc631fa4" class="outline-2">
+<h2 id="orgc631fa4"><span class="section-number-2">1.</span> How To Organize a Project</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+At this point you've probably got some data analysis going on. We've
+learned to use Make to orchestrate and document those processes. We've
+pretty much got all the technical pieces in place to choose a way to
+organize our entire project.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6d0ba2e" class="outline-2">
+<h2 id="org6d0ba2e"><span class="section-number-2">2.</span> What the Final Project Will Be Like</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Data science can result in a variety of "products." The kind you're
+most likely to see in a scientific context is a report of some
+kind. Where I'm from, most scientific reports are generated with
+LaTeX, a typesetting system. 
+</p>
+
+<p>
+If this is the case then our project is a flow of
+artifacts which culminate in a `report.pdf`.
+</p>
+
+<p>
+A semi-realistic example might look like this:
+</p>
+
+
+<div id="orgedd7714" class="figure">
+<p><img src="./f1.png" alt="f1.png" width="600" />
+</p>
+</div>
+
+<p>
+This structure of dependencies is manifested directly in your
+makefile, so putting aside issues of Docker, etc, the way your project
+works is that you say:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">make clean
+make report.pdf
+</pre>
+</div>
+
+<p>
+And your entire project should build. Of course, I've left off some
+artifacts of interest in the above diagram (all the source code that
+is involved in each step). But this is the basic idea.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc115908" class="outline-2">
+<h2 id="orgc115908"><span class="section-number-2">3.</span> A Project User Story</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+A user story is a nice way to describe how I want your final projects
+to be organized (roughly). Some of you may have to deviate some from
+this story, as we'll see with the example repo I have pulled up today,
+but it should roughly speaking be like this:
+</p>
+
+<ol class="org-ol">
+<li>User visits your git repo and goes to a machine where they have
+access to Docker. You may assume Docker is available to them and
+don't need to describe how to install it (but it doesn't hurt to
+link to the appropriate documentation).</li>
+<li><p>
+They open your README. This document tells them 
+</p>
+<ol class="org-ol">
+<li>A high level description of what the project is.</li>
+<li>how to build your Docker image</li>
+<li>how to run it in "developer mode" (probably starting R Studio)</li>
+<li>how to either run `make` to build whatever artifact is of</li>
+</ol>
+<p>
+interest in developer mode or how to do it from the command line.
+</p></li>
+<li>A rough description of the state of the project, including useful
+information like "this branch contains the version of the results I
+presented on this date" etc.</li>
+</ol>
+
+<p>
+The user reads your README and follows the instructions to build your
+VM, launch it, and then build your report. These instructions must be
+explicit, eg:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-markdown"><span class="org-markdown-header-face-1">Getting Started</span>
+<span class="org-markdown-header-rule">===============</span>
+
+Build the docker image by typing:
+<span class="org-markdown-code"><span class="org-markdown-markup">```</span></span>
+<span class="org-markdown-code"><span class="org-markdown-pre">docker build . -t toups611</span></span>
+<span class="org-markdown-code"><span class="org-markdown-markup">```</span></span>
+
+And then start an RStudio by typing:
+
+<span class="org-markdown-code"><span class="org-markdown-markup">```</span></span>
+<span class="org-markdown-code"><span class="org-markdown-pre">docker run -v $(pwd):/home/rstudio/project -p 8787:8787 -e PASSWORD=&lt;some-password&gt;</span></span>
+<span class="org-markdown-code"><span class="org-markdown-markup">```</span></span>
+
+Once the Rstudio is running connect to it by visiting
+<span class="org-markdown-plain-url">https://localhost:8787</span> in your browser. 
+
+To build the final report, visit the terminal in RStudio and type
+
+<span class="org-markdown-code"><span class="org-markdown-markup">```</span></span>
+<span class="org-markdown-code"><span class="org-markdown-pre">make report.pdf</span></span>
+<span class="org-markdown-code"><span class="org-markdown-markup">```</span></span>
+
+</pre>
+</div>
+
+<p>
+It is completely OK if you require your users to get into RStudio to
+type `make report.pdf` in the terminal.  But you must document this as
+above.
+</p>
+
+<p>
+What is the alternative? You could have them invoke Make directly from
+the command line via Docker. Something like:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">docker run -v $(<span class="org-builtin">pwd</span>):/home/rstudio/project<span class="org-sh-escaped-newline">\</span>
+       --user=<span class="org-string">"rstudio"</span> --workdir=<span class="org-string">"/home/rstudio/project"</span> -t toups611<span class="org-sh-escaped-newline">\</span>
+       make report.pdf
+</pre>
+</div>
+
+<p>
+This reflects the fact that you have two sorts of users in mind: your
+collaborators, who may be interested in getting a development
+environment running and a separate group of people who are just
+interested in your results.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga9eef32" class="outline-2">
+<h2 id="orga9eef32"><span class="section-number-2">4.</span> How to Generate Your Results</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+You have two choices here. You can generate your results with a
+Markdown document or a Latex Document. In either case you want to add
+the following lines to your Dockerfile:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Dockerfile">RUN R -e "install.packages(\"tinytex\")"
+RUN R -e "tinytex::install_tinytex()"
+</pre>
+</div>
+
+<p>
+The "source code" of your report will either be in a "report.Rmd" or a
+"report.tex" file. In the former case your build recipe for your
+report will look like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Makefile">report.pdf: deps ...
+	R -r "rmarkdown::render(\"report.Rmd\", output_format=\"pdf_document\")"
+
+# other targets ...
+</pre>
+</div>
+
+<p>
+Or
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Makefile">report.pdf: deps ...
+	R -r "tinytex:pdflatex(\"report.tex\")"
+
+# other targets ...
+</pre>
+</div>
+
+<p>
+We'll cover using these typesetting systems in greater detail in a
+future lecture, but at the bare minimum you need to know how to
+include pre-generated figures and text into these files.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6753f89" class="outline-2">
+<h2 id="org6753f89"><span class="section-number-2">5.</span> RMarkdown</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-org4c351e6" class="outline-3">
+<h3 id="org4c351e6"><span class="section-number-3">5.1.</span> Figures</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+You have two options here:
+</p>
+
+<ol class="org-ol">
+<li>Generate your figures ahead of time (as make targets) and include
+them in your Markdown document using the inline image syntax:</li>
+</ol>
+
+<div class="org-src-container">
+<pre class="src src-markdown"><span class="org-markdown-markup">![</span><span class="org-markdown-link">Alt Text</span><span class="org-markdown-markup">](</span><span class="org-markdown-url">./figures/f1.png</span><span class="org-markdown-markup">)</span>
+</pre>
+</div>
+
+<ol class="org-ol">
+<li>You can save your ggplot results directly as RDS files in your
+tasks that build the figures:</li>
+</ol>
+
+<div class="org-src-container">
+<pre class="src src-R">the_plot <span class="org-ess-assignment">&lt;-</span> ggplot(data, aes()) + ...;
+saveRDS(the_plot, file=<span class="org-string">"figure_rds/the_plot.rds"</span>);
+</pre>
+</div>
+
+<p>
+And then simply load them in regular RMarkdown blocks:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-markdown">
+<span class="org-markdown-code"><span class="org-markdown-markup">```{</span></span><span class="org-markdown-code"><span class="org-markdown-language-keyword">r</span></span><span class="org-markdown-code"><span class="org-markdown-markup">}</span></span>
+<span class="org-markdown-code"><span class="org-markdown-pre">readRDS("figure_rds/the_plot.rds")</span></span>
+<span class="org-markdown-code"><span class="org-markdown-markup">```</span></span>
+
+The RDS approach will produce better results and can be captioned more
+naturally, but the intermediate RDS files will be big.
+
+</pre>
+</div>
+
+
+<p>
+In the former case your report must list the png files as dependencies
+and they must be targets. In the latter the RDS files must be listed
+as dependencies and they must also be targets.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8d92146" class="outline-3">
+<h3 id="org8d92146"><span class="section-number-3">5.2.</span> Text in Markdown</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+It is handy, particularly in the case of tables and other fragments of
+text to generate RMarkdown programmatically and include it in the
+report document. 
+</p>
+
+<p>
+You do this by saying:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Markdown">And here are the results:
+
+```{r child="fragments/results01.Rmd"}
+```
+
+</pre>
+</div>
+
+<p>
+Again, whatever code generates results01.Rmd needs to have a target in
+the Makefile and the target must be listed as a dependency in the
+report target.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org72f2936" class="outline-2">
+<h2 id="org72f2936"><span class="section-number-2">6.</span> Latex</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Things are more straightforward in Latex. You will simply use the
+ordinary figure syntax:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-latex"><span class="org-keyword">\begin</span>{<span class="org-function-name">figure</span>}
+  <span class="org-keyword">\includegraphics</span>[width=<span class="org-keyword">\linewidth</span>]{<span class="org-builtin">figures/f1.png</span>}
+  <span class="org-keyword">\caption</span>{Some cool results}
+  <span class="org-keyword">\label</span>{<span class="org-constant">fig:f1</span>}
+<span class="org-keyword">\end</span>{<span class="org-function-name">figure</span>}
+</pre>
+</div>
+
+<p>
+And to include a fragment of latex you simply use the input command:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-latex"><span class="org-keyword">\input</span>{<span class="org-builtin">fragments/results01.tex</span>}
+</pre>
+</div>
+
+<p>
+All the ordinary rules for dealing with these files in terms of Make
+targets and dependencies need to be followed.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org92d7f62" class="outline-2">
+<h2 id="org92d7f62"><span class="section-number-2">7.</span> Handy Tricks</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+Consider the target:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Makefile">report.pdf: deps ...
+	git log -1 | head -n1 &gt; current-commit.Rmd
+	R -r "rmarkdown::render(\"report.Rmd\", output_format=\"pdf_document\")"
+
+# other targets ...
+</pre>
+</div>
+
+<p>
+Using this pattern you can include the current commit you want in your
+report somewhere. This is appropriate for all but the final build. You
+can have a separate target which does
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Makefile">clean-report.pdf: deps ...
+	rm -f current-commit.Rmd &amp;&amp; touch current-commit.Rmd
+	R -r "rmarkdown::render(\"report.Rmd\", output_format=\"pdf_document\", output_file=\"\clean-report.pdf")"
+
+# other targets ...
+</pre>
+</div>
+
+<p>
+In order to generate a version without the commit information in
+it. But this is really only appropriate for the final version of the
+report. In any case its handy to do something like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-Makefile">clean-report.pdf: deps ...
+	rm -f current-commit.Rmd &amp;&amp; touch current-commit.Rmd
+	R -r "rmarkdown::render(\"report.Rmd\", output_format=\"pdf_document\", output_file=\"\clean-report.pdf")"
+	mkdir -p versioned_reports/
+	cp clean-report.pdf versioned_reports/`git log -1 | head -n1 | cut -d' ' -f2`.pdf
+
+# other targets ...
+</pre>
+</div>
+
+<p>
+So that if someone hands you a PDF without the annotation you can
+figure out which commit it came from.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org15b762e" class="outline-2">
+<h2 id="org15b762e"><span class="section-number-2">8.</span> Concluding Notes</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+It is kind of a headache to generate text fragments and integrate them
+into a report. It is almost impossible, in fact, to make a report
+entirely automatically generated. But the more you can automate the
+way your results are integrated into a file report, the easier it will
+be to know for sure what version of the code your work comes from.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org96c5396" class="outline-2">
+<h2 id="org96c5396"><span class="section-number-2">9.</span> Demo of Ashar Repo</h2>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Created: 2023-10-09 Mon 19:13</p>
+</div>
+</body>
+</html>

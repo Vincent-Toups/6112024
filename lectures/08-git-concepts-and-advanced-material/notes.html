@@ -1,0 +1,1634 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2020-09-02 Wed 17:18 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Git Zero to Hero</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Vincent" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="./style.css"/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Git Zero to Hero</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org767f143">1. About These Notes</a></li>
+<li><a href="#org4f3b54a">2. Git</a></li>
+<li><a href="#org02a8bd1">3. Git Concepts</a>
+<ul>
+<li><a href="#org8916ad0">3.1. diff and patch</a></li>
+</ul>
+</li>
+<li><a href="#orgf174579">4. The Big Idea</a></li>
+<li><a href="#orgbacf822">5. `git status` and Three Things in your Head</a></li>
+<li><a href="#org544b38a">6. Let's make some commits.</a></li>
+<li><a href="#orga300d98">7. git diff</a></li>
+<li><a href="#orgcbd2966">8. Branches, Merges and Rebases</a></li>
+<li><a href="#org40a58be">9. Merge</a></li>
+<li><a href="#org179b133">10. Conflicts and Rebase</a></li>
+<li><a href="#orgb3447ef">11. Detached Head State and Commit Ids</a></li>
+<li><a href="#org071b0a1">12. Resolving Conflicts</a></li>
+<li><a href="#orgf1a8a0f">13. git commit ammend</a></li>
+<li><a href="#org9d6becb">14. Remotes</a></li>
+<li><a href="#orga1ea52b">15. Remotes and Branches</a></li>
+<li><a href="#orgd30f927">16. Don't pull</a></li>
+<li><a href="#org797fbee">17. the fetch/rebase pattern</a></li>
+<li><a href="#org88feb15">18. Interactive Staging And Small Commits</a></li>
+<li><a href="#orgc34c196">19. Forks and Pull Requests</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org767f143" class="outline-2">
+<h2 id="org767f143"><span class="section-number-2">1</span> About These Notes</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Today's lecture really is a continuous narrative, so we're going to
+follow along with my notes rather than use a slide deck.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4f3b54a" class="outline-2">
+<h2 id="org4f3b54a"><span class="section-number-2">2</span> Git</h2>
+<div class="outline-text-2" id="text-2">
+<ol class="org-ol">
+<li>The most commonly used version control system in the world.</li>
+<li>Among the most powerful.</li>
+<li>The most important tool you can learn in this class.</li>
+</ol>
+
+<p>
+Git, when used properly, gives you total control over the history of
+your work combined with excellent tools for collaboration. 
+</p>
+
+<p>
+Stop thinking of your project as "this code". Your project is the git
+repository.
+</p>
+
+<p>
+Never name files or functions "v1" "v2" "v3" etc. Just let git manage
+history and versions for you.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org02a8bd1" class="outline-2">
+<h2 id="org02a8bd1"><span class="section-number-2">3</span> Git Concepts</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org8916ad0" class="outline-3">
+<h3 id="org8916ad0"><span class="section-number-3">3.1</span> diff and patch</h3>
+<div class="outline-text-3" id="text-3-1">
+
+<div class="figure">
+<p><img src="./images/diff-patch.png" alt="diff-patch.png" />
+</p>
+</div>
+
+<p>
+Clear our temporary directory.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">rm -rf /tmp/example
+mkdir /tmp/example
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">
+</pre>
+</div>
+
+<p>
+Create two similar files.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">
+cat &lt;&lt; EOF &gt; filev1.txt
+<span style="color: #ffa54f;">This is a file I'm using as</span>
+<span style="color: #ffa54f;">an example for a presentation.</span>
+<span style="color: #ffa54f;">While git is the most common version control</span>
+<span style="color: #ffa54f;">system, it may not be the most powerful.</span>
+
+<span style="color: #ffa54f;">That distinction goes to Darcs.</span>
+<span style="color: #ffa54f;">EOF</span>
+
+cat &lt;&lt; EOF &gt; filev2.txt
+<span style="color: #ffa54f;">This is a file we are using as</span>
+<span style="color: #ffa54f;">an example for a presentation.</span>
+<span style="color: #ffa54f;">While git is the most common version </span>
+<span style="color: #ffa54f;">control system, it may not be the </span>
+<span style="color: #ffa54f;">most powerful.</span>
+
+<span style="color: #ffa54f;">That distinction goes to Pijul.</span>
+<span style="color: #ffa54f;">EOF</span>
+
+diff -u filev1.txt filev2.txt | cat
+
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">--- filev1.txt  2020-09-02 17:18:02.804355934 -0400
++++ filev2.txt  2020-09-02 17:18:02.804355934 -0400
+@@ -1,6 +1,7 @@
+-This is a file I<span style="color: #8b2252;">'m using as</span>
+<span style="color: #8b2252;">+This is a file we are using as</span>
+<span style="color: #8b2252;"> an example for a presentation.</span>
+<span style="color: #8b2252;">-While git is the most common version control</span>
+<span style="color: #8b2252;">-system, it may not be the most powerful.</span>
+<span style="color: #8b2252;">+While git is the most common version </span>
+<span style="color: #8b2252;">+control system, it may not be the </span>
+<span style="color: #8b2252;">+most powerful.</span>
+
+<span style="color: #8b2252;">-That distinction goes to Darcs.</span>
+<span style="color: #8b2252;">+That distinction goes to Pijul.</span>
+</pre>
+</div>
+
+<p>
+That is, diff takes two files which are similar and returns a "patch"
+which is a set of instructions for converting one file into another.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">
+diff -u filev1.txt filev2.txt &gt; the-patch
+patch -o filev2-from-patch.txt &lt; the-patch
+
+cat filev2-from-patch.txt 
+
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">patching file filev2-from-patch.txt (<span style="color: #483d8b;">read</span> from filev1.txt)
+This is a file we are using as
+an example for a presentation.
+While git is the most common version 
+control system, it may not be the 
+most powerful.
+
+That distinction goes to Pijul.
+</pre>
+</div>
+
+<p>
+Naturally the difference between `filev2-from-patch` and `filev2` is
+the empty diff.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">diff -u filev2-from-patch filev2 | cat
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf174579" class="outline-2">
+<h2 id="orgf174579"><span class="section-number-2">4</span> The Big Idea</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Your project is a chain of patches:
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbacf822" class="outline-2">
+<h2 id="orgbacf822"><span class="section-number-2">5</span> `git status` and Three Things in your Head</h2>
+<div class="outline-text-2" id="text-5">
+
+<div class="figure">
+<p><img src="./images/rule-of-three.png" alt="rule-of-three.png" />
+</p>
+</div>
+
+<ol class="org-ol">
+<li>The Branch HEAD</li>
+<li>The Staging Area</li>
+<li>The Working Copy</li>
+</ol>
+
+<div class="org-src-container">
+<pre class="src src-sh">rm *
+git init
+git status
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">Initialized empty Git repository<span style="color: #a020f0;"> in</span> /tmp/example/.git/
+On branch master
+
+No commits yet
+
+nothing to commit (create/copy files and use <span style="color: #8b2252;">"git add"</span> to track)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org544b38a" class="outline-2">
+<h2 id="org544b38a"><span class="section-number-2">6</span> Let's make some commits.</h2>
+<div class="outline-text-2" id="text-6">
+<div class="org-src-container">
+<pre class="src src-sh">
+cat &lt;&lt; EOF &gt; README.md
+<span style="color: #ffa54f;">About</span>
+<span style="color: #ffa54f;">=====</span>
+
+<span style="color: #ffa54f;">This is an example of a git repository.</span>
+
+<span style="color: #ffa54f;">EOF</span>
+
+git status
+
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">On branch master
+
+No commits yet
+
+Untracked files:
+  (use <span style="color: #8b2252;">"git add &lt;file&gt;..."</span> to include<span style="color: #a020f0;"> in</span> what will be committed)
+
+        README.md
+
+nothing added to commit but untracked files present (use <span style="color: #8b2252;">"git add"</span> to track)
+</pre>
+</div>
+
+<p>
+This is a little bit of a weird of a situation because we don't have
+any commits at all (this only happens when you have a new repo).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git add README.md
+git commit -m <span style="color: #8b2252;">"Initial commit."</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">[master (root-commit) a0586eb] Initial commit.
+ 1 file changed, 5 insertions(+)
+ create mode 100644 README.md
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orga300d98" class="outline-2">
+<h2 id="orga300d98"><span class="section-number-2">7</span> git diff</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+Let's add some changes. (Note that we can append to a file with `&gt;&gt;`).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">
+cat &lt;&lt; EOF &gt;&gt; README.md
+<span style="color: #ffa54f;">Using git is fun - try saying</span>
+
+<span style="color: #ffa54f;">   git log </span>
+
+<span style="color: #ffa54f;">Or other stuff!</span>
+<span style="color: #ffa54f;">EOF</span>
+
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">
+</pre>
+</div>
+
+<p>
+Now we can say 
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">
+git diff
+
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">diff --git a/README.md b/README.md
+index 56d7772..72dcade 100644
+--- a/README.md
++++ b/README.md
+@@ -3,3 +3,8 @@ About
+
+ This is an example of a git repository.
+
++Using git is fun - try saying
++
++   git log 
++   
++Or other stuff!
+</pre>
+</div>
+
+<p>
+"git diff" tells us the difference between the working copy and the
+branch HEAD (but not the differences which are staged).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git diff --stat
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">README.md | 5 +++++
+1 file changed, 5 insertions(+)
+</pre>
+</div>
+
+<p>
+And 
+</p>
+
+
+<div class="org-src-container">
+<pre class="src src-sh">git status
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">On branch master
+Changes not staged for commit:
+  (use <span style="color: #8b2252;">"git add &lt;file&gt;..."</span> to update what will be committed)
+  (use <span style="color: #8b2252;">"git checkout -- &lt;file&gt;..."</span> to discard changes<span style="color: #a020f0;"> in</span> working directory)
+
+        modified:   README.md
+
+no changes added to commit (use <span style="color: #8b2252;">"git add"</span> and/or <span style="color: #8b2252;">"git commit -a"</span>)
+</pre>
+</div>
+
+<p>
+A readable description.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgcbd2966" class="outline-2">
+<h2 id="orgcbd2966"><span class="section-number-2">8</span> Branches, Merges and Rebases</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+Branches have a HEAD. That is <b>almost</b> all a branch is, in the final
+analysis. A HEAD and some code which automatically moves the HEAD
+forward when you make a commit. Listing branches:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git branch -l
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">* master
+</pre>
+</div>
+
+<p>
+Branches are <b>local</b> by default.
+</p>
+
+<p>
+If you are working collaboratively with other people, feel free to
+create as many local branches as you want. This is particularly useful
+when you are getting started with git. If you are a little concerned
+about something, create a branch before doing it.
+</p>
+
+<p>
+There are two ways to create a new branch:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git branch experiment
+git status
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">On branch master
+Changes not staged for commit:
+  (use <span style="color: #8b2252;">"git add &lt;file&gt;..."</span> to update what will be committed)
+  (use <span style="color: #8b2252;">"git checkout -- &lt;file&gt;..."</span> to discard changes<span style="color: #a020f0;"> in</span> working directory)
+
+        modified:   README.md
+
+no changes added to commit (use <span style="color: #8b2252;">"git add"</span> and/or <span style="color: #8b2252;">"git commit -a"</span>)
+</pre>
+</div>
+
+<p>
+Note that the above creates a new branch but DOESN'T SWITCH TO IT!!
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git checkout -b experiment2
+git status
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">M       README.md
+On branch experiment2
+Changes not staged for commit:
+  (use <span style="color: #8b2252;">"git add &lt;file&gt;..."</span> to update what will be committed)
+  (use <span style="color: #8b2252;">"git checkout -- &lt;file&gt;..."</span> to discard changes<span style="color: #a020f0;"> in</span> working directory)
+
+        modified:   README.md
+
+no changes added to commit (use <span style="color: #8b2252;">"git add"</span> and/or <span style="color: #8b2252;">"git commit -a"</span>)
+</pre>
+</div>
+
+<p>
+Note we've switched to the experiment2 branch. 
+</p>
+
+<p>
+checkout (without -b) lets us check out other branches.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git checkout master
+git status
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">M       README.md
+On branch master
+Changes not staged for commit:
+  (use <span style="color: #8b2252;">"git add &lt;file&gt;..."</span> to update what will be committed)
+  (use <span style="color: #8b2252;">"git checkout -- &lt;file&gt;..."</span> to discard changes<span style="color: #a020f0;"> in</span> working directory)
+
+        modified:   README.md
+
+no changes added to commit (use <span style="color: #8b2252;">"git add"</span> and/or <span style="color: #8b2252;">"git commit -a"</span>)
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">git checkout experiment2
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">M       README.md
+</pre>
+</div>
+
+<p>
+Note that we can switch branches even if the working copy has changes.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org40a58be" class="outline-2">
+<h2 id="org40a58be"><span class="section-number-2">9</span> Merge</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+Let's make a commit. 
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git add README.md
+git commit -m <span style="color: #8b2252;">"Extended README."</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">[experiment2 3b43760] Extended README.
+ 1 file changed, 5 insertions(+)
+</pre>
+</div>
+
+<p>
+A simple merge:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git checkout master
+git merge experiment2
+git log -2 | cat
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">Updating a0586eb..3b43760
+Fast-forward
+ README.md | 5 +++++
+ 1 file changed, 5 insertions(+)
+commit 3b4376063a77895afa584032bfbd4b479b09253a
+Author: Vincent &lt;Vincent Toups&gt;
+Date:   Wed Sep 2 17:18:03 2020 -0400
+
+    Extended README.
+
+commit a0586eb9b62d02fb2d04d6f53f747e2934328d26
+Author: Vincent &lt;Vincent Toups&gt;
+Date:   Wed Sep 2 17:18:02 2020 -0400
+
+    Initial commit.
+</pre>
+</div>
+
+
+<div class="figure">
+<p><img src="./images/basic-merge.png" alt="basic-merge.png" />
+</p>
+</div>
+
+<p>
+This is a "fast forward" merge - we just add each commit from
+experiment2 to master. Because experiment2 is based precisely on the
+same commit that the master branch is still on, this is a trivial
+operation.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org179b133" class="outline-2">
+<h2 id="org179b133"><span class="section-number-2">10</span> Conflicts and Rebase</h2>
+<div class="outline-text-2" id="text-10">
+<p>
+Ther power of git is how it enables distributed development: two
+people on different machines (or even one person on different machines
+or just on different branches.)
+</p>
+
+<p>
+The simplest conflict is that one branch has "moved ahead" while
+another has done work based on a previous state.
+</p>
+
+<p>
+For now, imagine we are working on an experiment on a new branch,
+experiment3:
+</p>
+
+
+<div class="figure">
+<p><img src="./images/merge-vs-rebase.png" alt="merge-vs-rebase.png" />
+</p>
+</div>
+
+<p>
+We want to get the code represented by the orange commits. We could do
+it by merge or by rebase.
+</p>
+
+<p>
+The rebase is tidier and also more polite. It presumes that master is
+the authoritative version of the code and thus it should be that your
+experiment should look like it was made on the most recent version of
+master possible.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git checkout -b experiment3
+git status
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">On branch experiment3
+nothing to commit, working tree clean
+</pre>
+</div>
+
+<p>
+A simple case where there are no textual conflicts.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">cat &lt;&lt; EOF &gt; hello.md
+<span style="color: #ffa54f;">Hi everyone!</span>
+<span style="color: #ffa54f;">EOF</span>
+git add hello.md
+git commit -m <span style="color: #8b2252;">"Added hello.md"</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">[experiment3 6c4b556] Added hello.md
+ 1 file changed, 1 insertion(+)
+ create mode 100644 hello.md
+</pre>
+</div>
+
+<p>
+Now let's make a commit on master without merging first. This
+simulates master "moving on".
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git checkout master
+cat &lt;&lt; EOF &gt; goodbye.md
+<span style="color: #ffa54f;">So long, everyone.</span>
+<span style="color: #ffa54f;">EOF</span>
+git add goodbye.md
+git commit -m <span style="color: #8b2252;">"Added goodbye."</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">[master 12adad0] Added goodbye.
+ 1 file changed, 1 insertion(+)
+ create mode 100644 goodbye.md
+</pre>
+</div>
+
+<p>
+Now we check out experiment3 and do some experiments.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git checkout experiment3
+git checkout -b experiment3-merge
+git merge master
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">Merge made by the <span style="color: #8b2252;">'recursive'</span> strategy.
+ goodbye.md | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 goodbye.md
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">git log -3
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">commit 7e3f224edb054c5e3a2649ed4e08f1b5b24e54a4
+Merge: 6c4b556 12adad0
+Author: Vincent &lt;Vincent Toups&gt;
+Date:   Wed Sep 2 17:18:03 2020 -0400
+
+    Merge branch <span style="color: #8b2252;">'master'</span> into experiment3-merge
+
+commit 6c4b556377541629dbdf864455cb9ee6230068e6
+Author: Vincent &lt;Vincent Toups&gt;
+Date:   Wed Sep 2 17:18:03 2020 -0400
+
+    Added hello.md
+
+commit 12adad0b15b235a2362317c222e45d083bc42c29
+Author: Vincent &lt;Vincent Toups&gt;
+Date:   Wed Sep 2 17:18:03 2020 -0400
+
+    Added goodbye.
+</pre>
+</div>
+
+<p>
+Note that we branched before the merge. We can get back to where we
+were before by checkout out experiment3.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git checkout experiment3
+git checkout -b experiment-rebase
+git rebase master
+git log -3
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">First, rewinding head to replay your work on top of it...
+Applying: Added hello.md
+commit 2c7626caa606b24663a7b3438f2531d0335b7608
+Author: Vincent &lt;Vincent Toups&gt;
+Date:   Wed Sep 2 17:18:03 2020 -0400
+
+    Added hello.md
+
+commit 12adad0b15b235a2362317c222e45d083bc42c29
+Author: Vincent &lt;Vincent Toups&gt;
+Date:   Wed Sep 2 17:18:03 2020 -0400
+
+    Added goodbye.
+
+commit 3b4376063a77895afa584032bfbd4b479b09253a
+Author: Vincent &lt;Vincent Toups&gt;
+Date:   Wed Sep 2 17:18:03 2020 -0400
+
+    Extended README.
+</pre>
+</div>
+
+<p>
+Note the absence of the merge. 
+</p>
+
+<p>
+Most of the time code flows back into master - this is the "canonical"
+version of the repository meant for things which are "really done."
+</p>
+
+<p>
+The nice thing about rebase is that it allows us to do a trivial merge
+of the feature branch into master - the feature branch now looks like
+it was based on the most recent version.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git checkout master
+git merge experiment-rebase
+git log -3
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">Updating 12adad0..2c7626c
+Fast-forward
+ hello.md | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 hello.md
+commit 2c7626caa606b24663a7b3438f2531d0335b7608
+Author: Vincent &lt;Vincent Toups&gt;
+Date:   Wed Sep 2 17:18:03 2020 -0400
+
+    Added hello.md
+
+commit 12adad0b15b235a2362317c222e45d083bc42c29
+Author: Vincent &lt;Vincent Toups&gt;
+Date:   Wed Sep 2 17:18:03 2020 -0400
+
+    Added goodbye.
+
+commit 3b4376063a77895afa584032bfbd4b479b09253a
+Author: Vincent &lt;Vincent Toups&gt;
+Date:   Wed Sep 2 17:18:03 2020 -0400
+
+    Extended README.
+</pre>
+</div>
+
+<p>
+A "fast forward" merge doesn't create a merge commit.
+</p>
+
+<p>
+<span class="underline">Moral of the Story: Rebase when working on features. Save "merge" for
+ genuine mergers of truly different histories.</span>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb3447ef" class="outline-2">
+<h2 id="orgb3447ef"><span class="section-number-2">11</span> Detached Head State and Commit Ids</h2>
+<div class="outline-text-2" id="text-11">
+
+<div class="figure">
+<p><img src="./images/detached-head.png" alt="detached-head.png" />
+</p>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">git log
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">commit 2c7626caa606b24663a7b3438f2531d0335b7608
+Author: Vincent &lt;Vincent Toups&gt;
+Date:   Wed Sep 2 17:18:03 2020 -0400
+
+    Added hello.md
+
+commit 12adad0b15b235a2362317c222e45d083bc42c29
+Author: Vincent &lt;Vincent Toups&gt;
+Date:   Wed Sep 2 17:18:03 2020 -0400
+
+    Added goodbye.
+
+commit 3b4376063a77895afa584032bfbd4b479b09253a
+Author: Vincent &lt;Vincent Toups&gt;
+Date:   Wed Sep 2 17:18:03 2020 -0400
+
+    Extended README.
+
+commit a0586eb9b62d02fb2d04d6f53f747e2934328d26
+Author: Vincent &lt;Vincent Toups&gt;
+Date:   Wed Sep 2 17:18:02 2020 -0400
+
+    Initial commit.
+</pre>
+</div>
+
+<p>
+Each commit has an id.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git log | grep commit | cut -d<span style="color: #8b2252;">' '</span> -f2
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">2c7626caa606b24663a7b3438f2531d0335b7608
+12adad0b15b235a2362317c222e45d083bc42c29
+3b4376063a77895afa584032bfbd4b479b09253a
+a0586eb9b62d02fb2d04d6f53f747e2934328d26
+
+</pre>
+</div>
+
+<p>
+Let's detach our head.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #a0522d;">commit_id</span>=$(<span style="color: #ff00ff;">git</span> log | grep commit | cut -d<span style="color: #8b2252;">' '</span> -f2 | sed <span style="color: #8b2252;">'3q;d'</span>)
+git checkout $<span style="color: #a0522d;">commit_id</span>
+git status
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">HEAD detached at 3b43760
+nothing to commit, working tree clean
+</pre>
+</div>
+
+<p>
+You can always re-attach your head by checking out a branch (or
+creating a new one).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git checkout -b new-head
+git status
+git log
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">On branch new-head
+nothing to commit, working tree clean
+commit 3b4376063a77895afa584032bfbd4b479b09253a
+Author: Vincent &lt;Vincent Toups&gt;
+Date:   Wed Sep 2 17:18:03 2020 -0400
+
+    Extended README.
+
+commit a0586eb9b62d02fb2d04d6f53f747e2934328d26
+Author: Vincent &lt;Vincent Toups&gt;
+Date:   Wed Sep 2 17:18:02 2020 -0400
+
+    Initial commit.
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org071b0a1" class="outline-2">
+<h2 id="org071b0a1"><span class="section-number-2">12</span> Resolving Conflicts</h2>
+<div class="outline-text-2" id="text-12">
+<p>
+Conflicts occur when two commits touch the same line of code. Git can
+tell you about them but it can't fix them for you. Let's simulate a
+conflict.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git checkout master
+git checkout -b conflicts
+cat &lt;&lt; EOF &gt; conflicts-here.md
+<span style="color: #ffa54f;">This is a file</span>
+<span style="color: #ffa54f;">it has some lines</span>
+<span style="color: #ffa54f;">I hope nothing goes wrong!</span>
+<span style="color: #ffa54f;">Perhaps it will, though.</span>
+<span style="color: #ffa54f;">Best have a plan.</span>
+<span style="color: #ffa54f;">EOF</span>
+
+git add conflicts-here.md
+git commit -m <span style="color: #8b2252;">"Added a new file."</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">[conflicts a5f3062] Added a new file.
+ 1 file changed, 5 insertions(+)
+ create mode 100644 conflicts-here.md
+</pre>
+</div>
+
+<p>
+Now on master, let's create a conflict.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git checkout master
+cat &lt;&lt; EOF &gt; conflicts-here.md
+<span style="color: #ffa54f;">This is a file</span>
+<span style="color: #ffa54f;">it has many lines</span>
+<span style="color: #ffa54f;">I hope nothing goes wrong!</span>
+<span style="color: #ffa54f;">Perhaps it will, though.</span>
+<span style="color: #ffa54f;">Best have a good plan.</span>
+<span style="color: #ffa54f;">EOF</span>
+
+git add conflicts-here.md
+git commit -m <span style="color: #8b2252;">"Added a conflict file."</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">[master 033ab9a] Added a conflict file.
+ 1 file changed, 5 insertions(+)
+ create mode 100644 conflicts-here.md
+</pre>
+</div>
+
+<p>
+We are good citizens, so we go to the conflicts branch and try to
+rebase on master, which has moved ahead.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git checkout conflicts
+<span style="color: #b22222;"># </span><span style="color: #b22222;">we'd usually run this</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">git rebase master</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">but since we are capturing the output in this document </span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">we need to be a litte tricky</span>
+git rebase master &gt; rebase-report
+cat rebase-report
+rm rebase-report
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">First, rewinding head to replay your work on top of it...
+Applying: Added a new file.
+Using index info to reconstruct a base tree...
+Falling back to patching base and 3-way merge...
+Auto-merging conflicts-here.md
+<span style="color: #0000ff;">CONFLICT</span> (add/add): Merge conflict<span style="color: #a020f0;"> in</span> conflicts-here.md
+Patch failed at 0001 Added a new file.
+Use <span style="color: #8b2252;">'git am --show-current-patch'</span> to see the failed patch
+
+Resolve all conflicts manually, mark them as resolved with
+<span style="color: #8b2252;">"git add/rm &lt;conflicted_files&gt;"</span>, then run <span style="color: #8b2252;">"git rebase --continue"</span>.
+You can instead skip this commit: run <span style="color: #8b2252;">"git rebase --skip"</span>.
+To abort and get back to the state before <span style="color: #8b2252;">"git rebase"</span>, run <span style="color: #8b2252;">"git rebase --abort"</span>.
+
+</pre>
+</div>
+
+<p>
+To resolve this we need to look at the file:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">cat conflicts-here.md
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">This is a file
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+it has many lines
+I hope nothing goes wrong!
+Perhaps it will, though.
+Best have a good plan.
+=======
+it has some lines
+I hope nothing goes wrong!
+Perhaps it will, though.
+Best have a plan.
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; Added a new file.
+</pre>
+</div>
+
+<p>
+Note that git has fused these files together and it expects us to edit
+it until we have the version we want.
+</p>
+
+<p>
+Let's assume our version is actually better, so we keep just the
+bottom part:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">cat &lt;&lt; EOF &gt; conflicts-here.md
+<span style="color: #ffa54f;">it has some lines</span>
+<span style="color: #ffa54f;">I hope nothing goes wrong!</span>
+<span style="color: #ffa54f;">Perhaps it will, though.</span>
+<span style="color: #ffa54f;">Best have a plan.</span>
+<span style="color: #ffa54f;">EOF</span>
+git add conflicts-here.md
+git rebase --continue 
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">Applying: Added a new file.
+</pre>
+</div>
+
+<p>
+And that should finish the merge:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git log -3
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">commit 715ec33134b238d5a7b31cc9c68767a339dd538a
+Author: Vincent &lt;Vincent Toups&gt;
+Date:   Wed Sep 2 17:18:03 2020 -0400
+
+    Added a new file.
+
+commit 033ab9ac6db4f748bcca498c3121e05a0c9be139
+Author: Vincent &lt;Vincent Toups&gt;
+Date:   Wed Sep 2 17:18:03 2020 -0400
+
+    Added a conflict file.
+
+commit 2c7626caa606b24663a7b3438f2531d0335b7608
+Author: Vincent &lt;Vincent Toups&gt;
+Date:   Wed Sep 2 17:18:03 2020 -0400
+
+    Added hello.md
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf1a8a0f" class="outline-2">
+<h2 id="orgf1a8a0f"><span class="section-number-2">13</span> git commit ammend</h2>
+<div class="outline-text-2" id="text-13">
+<p>
+Sometimes we want to modify the last commit. This is ok as long as we
+haven't pushed yet. 
+</p>
+
+<p>
+In this case the commit message is now a little weird - its better to
+say we modified the file introduced by master.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git commit --amend -m <span style="color: #8b2252;">"Modified the conflicting file."</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">[conflicts c0e904b] Modified the conflicting file.
+ Date: Wed Sep 2 17:18:03 2020 -0400
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+</pre>
+</div>
+
+<p>
+Now we just need to merge our conflicts branch onto master:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git checkout master 
+git merge conflicts
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">Updating 033ab9a..c0e904b
+Fast-forward
+ conflicts-here.md | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9d6becb" class="outline-2">
+<h2 id="org9d6becb"><span class="section-number-2">14</span> Remotes</h2>
+<div class="outline-text-2" id="text-14">
+<p>
+Git is distributed version control. Everyone who has a git repository
+is in principle working alone.
+</p>
+
+<p>
+`remotes` are the way git allows collaboration. Remotes have names
+which point to locations. By far the most common name for a remote is
+`origin` and that remote often points to github, though there are
+other services (bitbucket, gitlab). A remote can even be another
+directory on your computer.
+</p>
+
+<p>
+You list your remotes by saying:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git remote -v
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">
+</pre>
+</div>
+
+<p>
+But we don't have any. We all created our git repositories locally
+first and then associated them with a remote on github by saying something like 
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #b22222;"># </span><span style="color: #b22222;">git remote add origin &lt;some-url-at-github&gt;</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">
+</pre>
+</div>
+
+<p>
+But its much more ordinary to have a remote configured for you via a
+clone:
+</p>
+
+<p>
+(Clear any previous workspaces)
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">rm -rf /tmp/workspace
+mkdir /tmp/workspace
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">
+</pre>
+</div>
+
+<p>
+And in that directory:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git clone git@github.com:Vincent-Toups/bios611-project1.git
+<span style="color: #483d8b;">cd</span> bios611-project1
+git remote -v
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">origin  git@github.com:Vincent-Toups/bios611-project1.git (fetch)
+origin  git@github.com:Vincent-Toups/bios611-project1.git (push)
+</pre>
+</div>
+
+<p>
+Note that you may also clone from an `https` link. This specifies the
+way you intend to interact with the remote repository. Either is fine,
+but if you are using ssh keys it probably will be a `git@` style url.
+</p>
+
+<p>
+You can generally ignore this business of `fetch` and `push` remotes.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga1ea52b" class="outline-2">
+<h2 id="orga1ea52b"><span class="section-number-2">15</span> Remotes and Branches</h2>
+<div class="outline-text-2" id="text-15">
+<p>
+Usually you are trying to keep synchronized with a remote branch that
+someone else might be working on.
+</p>
+
+<p>
+When you clone a repo for the first time it automatically sets up
+associations between the local branches and the branches on the remote
+you cloned from.
+</p>
+
+<p>
+Thus commands like `git push`, `git pull` and `git fetch` know what
+branch to look for on the remote.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd30f927" class="outline-2">
+<h2 id="orgd30f927"><span class="section-number-2">16</span> Don't pull</h2>
+<div class="outline-text-2" id="text-16">
+<p>
+You should understand `git pull` as meaning strictly "I am behind the
+remote and I've done nothing at all locally and I just want to get the
+latest commits."
+</p>
+
+<p>
+In any other situation you want to do the following:
+</p>
+</div>
+</div>
+
+<div id="outline-container-org797fbee" class="outline-2">
+<h2 id="org797fbee"><span class="section-number-2">17</span> the fetch/rebase pattern</h2>
+<div class="outline-text-2" id="text-17">
+<div class="org-src-container">
+<pre class="src src-sh">git fetch <span style="color: #b22222;"># </span><span style="color: #b22222;">grab the remote commits but don't change local branches</span>
+git rebase origin/master <span style="color: #b22222;"># </span><span style="color: #b22222;">rebase master on origin master</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org88feb15" class="outline-2">
+<h2 id="org88feb15"><span class="section-number-2">18</span> Interactive Staging And Small Commits</h2>
+<div class="outline-text-2" id="text-18">
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #b22222;"># </span><span style="color: #b22222;">git add -i # I have to demo this</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">
+</pre>
+</div>
+
+<p>
+The idea is to add <span class="underline">pieces</span> of files to the staging area. This allows
+very granular commits even if you let the working copy get pretty
+messy.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc34c196" class="outline-2">
+<h2 id="orgc34c196"><span class="section-number-2">19</span> Forks and Pull Requests</h2>
+<div class="outline-text-2" id="text-19">
+<p>
+You are unlikely to need to do this in this class, but you are likely
+to have to do it at some point.
+</p>
+
+<p>
+Conceptually, every `git clone` produces a fork. But on github and
+other places there is a more formal idea.
+</p>
+
+
+<div class="figure">
+<p><img src="./images/fork.png" alt="fork.png" />
+</p>
+</div>
+
+<p>
+This clones the repo to your account. You can then clone it onto your
+computer and work on it. If you do work you think you might want to
+contribute back you should then do a pull request via github.
+</p>
+
+<p>
+But before you do that you would need to rebase your master branch on
+the original repository (this is the polite thing to do in most
+cases).
+</p>
+
+<p>
+This is a good way to see when you might have more than one remote.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">cd</span> /tmp
+rm -rf puff 
+git clone git@github.com:Vincent-Toups/puff.git
+<span style="color: #483d8b;">cd</span> puff
+git remote -v 
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">origin  git@github.com:Vincent-Toups/puff.git (fetch)
+origin  git@github.com:Vincent-Toups/puff.git (push)
+</pre>
+</div>
+
+<p>
+Note that I've only got remotes for my copy of the repo.
+</p>
+
+<p>
+I can add a second remote for the "upstream" version of the project
+(that is, the place I cloned from).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git remote add upstream git@github.com:VincentToups/puff.git 
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">
+</pre>
+</div>
+
+<p>
+And then to rebase I'd say:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">git fetch upstream
+git rebase upstream/master 
+git push <span style="color: #b22222;"># </span><span style="color: #b22222;">up to my CSCC account.</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh">
+</pre>
+</div>
+
+<p>
+And then I'd make a pull request.
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Vincent</p>
+<p class="date">Created: 2020-09-02 Wed 17:18</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

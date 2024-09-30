@@ -1,0 +1,242 @@
+* How To Organize a Project
+
+At this point you've probably got some data analysis going on. We've
+learned to use Make to orchestrate and document those processes. We've
+pretty much got all the technical pieces in place to choose a way to
+organize our entire project.
+
+* What the Final Project Will Be Like
+
+Data science can result in a variety of "products." The kind you're
+most likely to see in a scientific context is a report of some
+kind. Where I'm from, most scientific reports are generated with
+LaTeX, a typesetting system. 
+
+If this is the case then our project is a flow of
+artifacts which culminate in a `report.pdf`.
+
+A semi-realistic example might look like this:
+
+#+ATTR_HTML: :width 600
+#+ATTR_ORG: :width 600
+[[./f1.png]]
+
+This structure of dependencies is manifested directly in your
+makefile, so putting aside issues of Docker, etc, the way your project
+works is that you say:
+
+#+begin_src sh 
+make clean
+make report.pdf
+#+end_src
+
+And your entire project should build. Of course, I've left off some
+artifacts of interest in the above diagram (all the source code that
+is involved in each step). But this is the basic idea.
+
+* A Project User Story 
+
+A user story is a nice way to describe how I want your final projects
+to be organized (roughly). Some of you may have to deviate some from
+this story, as we'll see with the example repo I have pulled up today,
+but it should roughly speaking be like this:
+
+1. User visits your git repo and goes to a machine where they have
+   access to Docker. You may assume Docker is available to them and
+   don't need to describe how to install it (but it doesn't hurt to
+   link to the appropriate documentation).
+2. They open your README. This document tells them 
+   1. A high level description of what the project is.
+   2. how to build your Docker image
+   3. how to run it in "developer mode" (probably starting R Studio)
+   4. how to either run `make` to build whatever artifact is of
+   interest in developer mode or how to do it from the command line.
+3. A rough description of the state of the project, including useful
+   information like "this branch contains the version of the results I
+   presented on this date" etc.
+
+The user reads your README and follows the instructions to build your
+VM, launch it, and then build your report. These instructions must be
+explicit, eg:
+
+ #+begin_src markdown
+Getting Started
+===============
+
+Build the docker image by typing:
+```
+docker build . -t toups611
+```
+
+And then start an RStudio by typing:
+
+```
+docker run -v $(pwd):/home/rstudio/project -p 8787:8787 -e PASSWORD=<some-password>
+```
+
+Once the Rstudio is running connect to it by visiting
+https://localhost:8787 in your browser. 
+
+To build the final report, visit the terminal in RStudio and type
+
+```
+make report.pdf
+```
+
+ #+end_src
+
+It is completely OK if you require your users to get into RStudio to
+type `make report.pdf` in the terminal.  But you must document this as
+above.
+
+What is the alternative? You could have them invoke Make directly from
+the command line via Docker. Something like:
+
+#+begin_src sh
+  docker run -v $(pwd):/home/rstudio/project\
+         --user="rstudio" --workdir="/home/rstudio/project" -t toups611\
+         make report.pdf
+#+end_src
+
+This reflects the fact that you have two sorts of users in mind: your
+collaborators, who may be interested in getting a development
+environment running and a separate group of people who are just
+interested in your results.
+
+* How to Generate Your Results
+
+You have two choices here. You can generate your results with a
+Markdown document or a Latex Document. In either case you want to add
+the following lines to your Dockerfile:
+
+#+begin_src Dockerfile
+  RUN R -e "install.packages(\"tinytex\")"
+  RUN R -e "tinytex::install_tinytex()"
+#+end_src
+
+The "source code" of your report will either be in a "report.Rmd" or a
+"report.tex" file. In the former case your build recipe for your
+report will look like this:
+
+#+INCLUDE: "RMDMakefile" src Makefile 
+
+Or
+
+#+INCLUDE: "latexMakefile" src Makefile
+
+We'll cover using these typesetting systems in greater detail in a
+future lecture, but at the bare minimum you need to know how to
+include pre-generated figures and text into these files.
+
+* RMarkdown
+
+** Figures
+
+You have two options here:
+
+1. Generate your figures ahead of time (as make targets) and include
+   them in your Markdown document using the inline image syntax:
+
+#+begin_src markdown
+![Alt Text](./figures/f1.png)
+#+end_src
+
+2. You can save your ggplot results directly as RDS files in your
+   tasks that build the figures:
+
+#+begin_src R
+  the_plot <- ggplot(data, aes()) + ...;
+  saveRDS(the_plot, file="figure_rds/the_plot.rds");
+#+end_src
+
+And then simply load them in regular RMarkdown blocks:
+
+#+begin_src markdown
+
+```{r}
+readRDS("figure_rds/the_plot.rds")
+```
+
+The RDS approach will produce better results and can be captioned more
+naturally, but the intermediate RDS files will be big.
+
+#+end_src
+
+
+In the former case your report must list the png files as dependencies
+and they must be targets. In the latter the RDS files must be listed
+as dependencies and they must also be targets.
+
+** Text in Markdown
+
+It is handy, particularly in the case of tables and other fragments of
+text to generate RMarkdown programmatically and include it in the
+report document. 
+
+You do this by saying:
+
+#+begin_src Markdown
+And here are the results:
+
+```{r child="fragments/results01.Rmd"}
+```
+
+#+end_src
+
+Again, whatever code generates results01.Rmd needs to have a target in
+the Makefile and the target must be listed as a dependency in the
+report target.
+
+* Latex
+
+Things are more straightforward in Latex. You will simply use the
+ordinary figure syntax:
+
+#+begin_src latex
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/f1.png}
+  \caption{Some cool results}
+  \label{fig:f1}
+\end{figure}
+#+end_src
+
+And to include a fragment of latex you simply use the input command:
+
+#+begin_src latex
+\input{fragments/results01.tex}
+#+end_src
+
+All the ordinary rules for dealing with these files in terms of Make
+targets and dependencies need to be followed.
+
+* Handy Tricks
+
+Consider the target:
+
+#+INCLUDE: "commitMakefile" src Makefile
+
+Using this pattern you can include the current commit you want in your
+report somewhere. This is appropriate for all but the final build. You
+can have a separate target which does
+
+#+INCLUDE: "commit2Makefile" src Makefile
+
+In order to generate a version without the commit information in
+it. But this is really only appropriate for the final version of the
+report. In any case its handy to do something like this:
+
+#+INCLUDE: "commit3Makefile" src Makefile
+
+So that if someone hands you a PDF without the annotation you can
+figure out which commit it came from.
+
+* Concluding Notes
+
+It is kind of a headache to generate text fragments and integrate them
+into a report. It is almost impossible, in fact, to make a report
+entirely automatically generated. But the more you can automate the
+way your results are integrated into a file report, the easier it will
+be to know for sure what version of the code your work comes from.
+
+* Demo of Ashar Repo
+

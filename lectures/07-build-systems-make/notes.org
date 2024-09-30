@@ -261,7 +261,7 @@ Add the following to your `utils.R`
 #+begin_src R
 make_logger <- function(filename, sep="\n"){
     if(file.exists(filename)){
-        file.remote(filename);
+        file.remove(filename);
     }
     function(...){
         text <- sprintf(...);
