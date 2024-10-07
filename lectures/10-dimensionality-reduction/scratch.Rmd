@@ -1,0 +1,106 @@
+More Advanced Methods
+=====================
+
+PCA has the advantage that it is extremely simple and easy to
+understand. It is even easy to implement (naively, anyway - the PCs
+are the eigenvectors of the covariance matrix of the data).
+
+But it is also clearly limited as a dimensionality reduction
+method. Indeed, the idea that PCA reduces the dimensionality of the
+data is entirely external to the method itself. It rests on the
+assumption that directions of smaller variation represent "noise" and
+can be discarded. 
+
+The method is also totally linear and, as we've stated, dependent on
+the idea that the points live in a vector space.
+
+There are many alternative methods of dimensionality reduction. Many
+of them rest on the following kind of idea:
+
+Assume there is a natural distance measure on your data set. For
+instance, a euclidean distance:
+
+$$
+d_{ij} = \sqrt(\sum_k{(x_{ki} - x_{kj})^2})
+$$
+
+We seek an $f$ such that:
+
+$$
+\begin{aligned}
+&x_i^{*} = f(x_i)\\
+&d_{ij}^{*} = \sqrt(\sum_k{(x^{*}_{ki} - x^{*}_{kj})^2})\\
+&min_{f}((d_{ij}-d^{*}_{ij})^2)
+\end{aligned}
+$$
+
+Where $f$ transforms our data from a high dimensional representation
+to a lower dimensional one.
+
+The above still relies on the assumption that the euclidean distance
+in the high dimensional space is the important quantity to
+conserve. But the manifold assumption leads us to naturally consider
+whether that is always true in general.
+
+Consider a data set:
+
+```{r}
+bad_data <- tibble(r = 5 + rnorm(600,0,0.1),
+                   theta = c(rnorm(200,pi/2,0.2),
+                             rnorm(200,2*pi/2, 0.2),
+                             rnorm(200,3*pi/2, 0.2))) %>%
+    transmute(x=r*cos(theta),
+              y=r*sin(theta));
+ggplot(bad_data, aes(x,y)) + geom_point() + coord_fixed();
+```
+
+In this situation, the data are distributed in clusters on a shell
+with radius 5. The best distance for distinguishing these two sets is
+probably the theta rather than the euclidean distance. The best
+dimensionality reduction method would be using an `f` like:
+
+$$
+f(x1,x2) = atan2(y1, x1);
+$$
+
+
+We're going to repeat the same process over and over here: 
+
+1. perform a dimensionality reduction
+2. plot the results in 2d w/ the labels
+
+eg:
+
+```{r}
+ldatav <- pivot_wider(ldata %>%
+                      arrange(time) %>% filter(time>1),
+                      id_cols=c("trial","label"),
+                      names_from="time",
+                      values_from="V",
+                      names_sort=FALSE);
+results <- prcomp(ldatav %>% select(-trial,-label) %>% as.matrix(),
+                  center=T, scale=T);
+ggplot(results$x %>% as_tibble(), aes(PC1,PC2)) + geom_point(aes(color=factor(ldatav$label)))
+
+```
+
+Heck! That is remarkably good! Don't expect your results to always be
+this nice.
+
+
+```{r}
+data <- tibble(z=c(rnorm(100, 10, 3),
+                   rnorm(100, 3, 3)),
+               r=c(rnorm(50, 4, 1),
+                   rnorm(50, 2, 1),
+                   rnorm(50, 4, 1),
+                   rnorm(50, 2, 1)),
+               th=c(rnorm(100, pi/2, pi/20),
+                    rnorm(100, pi, pi/21))) %>%
+    transmute(x = r*cos(th),
+              y = r*sin(th),
+              z= z) %>%
+    write_csv("homework_data.csv");
+
+
+```
