@@ -1,0 +1,595 @@
+---
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+# Classification
+
+Clustering is the process of finding groups in data when you have no
+labels. If you have labels and you would like to leverage your data to
+predict such, then you have a classification problem.
+
+The existence of labels simplifies things enormously but introduces some
+complications as well.
+
+You may have noticed that what we do in this course w.r.t these data
+science methods is introduce a very simple, commonly used, easy to
+interpret method, discuss its interpretation and limitations, and then
+introduce more powerful techniques. We usually then understand that more
+powerful methods entail trade offs, particularly interpretational ones.
+
+Recall: if we have data which is ammenable to k-means cluster (or
+slightly more general methods like Gaussian Mixture Models) then we have
+reasonable cause to *genuinely* suspect that various distinct processes,
+well characterized by the means and standard deviations, produce our
+data.
+
+On the other hand, while more powerful methods may successfully cluster
+some non-trivial data set, because they throw away the structure which
+relates entities on anything but a local scale, the interpretation of
+the resulting groups is much more challenging: by definition they are
+not well characterized by any parameters which make global sense.
+
+A similar dynamic prevails here.
+
+# The Big Idea
+
+For the moment let's restrict ourselves to numerical data. You may need
+to use a method like multidimensional scaling to embed data with only a
+metric. Anyway, one way or another the act of measuring our data
+eventually embeds them into a $\mathbb{R}^{n}$. By now you should
+appreciate just how strange this embedding may be.
+
+Anyway, someone gives you labels. Let's just use the built in Iris data
+today.
+
+```{r}
+library(tidyverse)
+data(iris)
+iris %>% group_by(Species) %>% sample_n(3) %>% ungroup()
+```
+
+Manifestly, this is some botanical data which hopes to relate various
+measured properties of these iris species to their species.
+
+Our immediate goal is to use the numerical data to guess the species.
+For the purposes of demonstration let's just consider two species at
+first:
+
+```{r}
+iris_ss <- iris %>% filter(Species %in% c("setosa","virginica"));
+plot(iris_ss);
+
+```
+
+This isn't the most informative way of approaching the problem but you
+can see that we have some likely ways of solving this classification
+problem.
+
+```{r}
+ggplot(iris_ss, aes(Petal.Width, Petal.Length)) + geom_point(aes(color=Species));
+```
+
+Classification on this kind of data can be thought of as the task of
+drawing a *boundary* which separates the two classes. Eg:
+
+```{r}
+add_line <- function(x0,y0,xf,yf){
+    geom_line(inherit.aes=F, data=tibble(x=c(x0,xf),y=c(y0,yf)),
+                 mapping=aes(x,y));
+}
+
+ggplot(iris_ss, aes(Petal.Width, Petal.Length)) +
+    geom_point(aes(color=Species)) +
+    add_line(0,5.0,2.5,0);
+```
+
+In the very simple case where you have two classes for which there
+exists a hyperplane which separates them, this is literally what linear
+discriminant analysis finds: the hyperplane which best separates two
+classes. LDA assumes that our variables have uniform mean and variance.
+
+```{r}
+iris_ss <- iris_ss %>% mutate(across(Sepal.Length:Petal.Width, scale));
+ggplot(iris_ss, aes(Petal.Width, Petal.Length)) +
+    geom_point(aes(color=Species))
+```
+
+And we just use the MASS package to apply the method:
+
+```{r}
+
+results <- MASS::lda(Species~., data=iris_ss);
+```
+
+Interpreting an LDA model is a bit like understanding a PCA. The
+coefficients that we get back constitute a transformation of the vectors
+into hyperplane (in this case, 1 dimension). Once we are in this 1D
+space its a simple procedure to find a line which best splits the two
+data sets, which is the decision rule:
+
+```{r}
+s <- results$scaling;
+tr <- iris_ss %>% transmute(proj=Sepal.Length*s[1]+
+                                Sepal.Width*s[2]+
+                                Petal.Length*s[3]+
+                                Petal.Width*s[4], Species=Species);
+ggplot(tr,aes(proj)) + geom_histogram(aes(fill=Species)) + add_line(0,0,0,16);
+
+```
+
+A bit like PCA or K-Means you could almost implement this method
+yourself with a bit of thought.
+
+# Regular Regression
+
+It is a peculiarity inherited from previous versions of this course that
+we discuss classification but not regression. Maybe the reason is that
+we assume students will have take a linear models class or have
+otherwise encountered the very basic technique of linear regression
+elsewhere.
+
+However, its worth a brief review.
+
+Regression is just the process of finding a linear function in a set of
+variables which predicts another variable:
+
+$$\bar{x_i} = \beta^T  y_i$$
+
+(astute readers here may notice that I've folded the intercept into
+$\beta$ by augmenting $y_i$ with an extra element that is always 1.)
+
+Which we do by minimizing a function on $\bar{x_i}, x_i$, typically the
+RMS error: $\sqrt((\bar{x_i}-x_i)^2)$. Like PCA and k-means, its
+surprising how frequently this apparently simple (even absurd) procedure
+produces good results. Linear regression is built into R:
+
+```{r}
+data("mtcars")
+plot(mtcars)
+the_formula <- mpg ~ drat + hp 
+model <- lm(the_formula, mtcars)
+summary(model)
+plot(model)
+```
+
+How do you know if a regression is good? This is a whole thing and a bit
+out of scope for a data science class per se, but it boils down to:
+
+1.  the p-values for the coefficients should be small
+2.  the residuals should be normally distributed
+3.  the q-q plot should be linear
+
+In principal an assumption of a linear regression is that your variables
+are independent. One of the reasons people sometimes do PCA before a
+regression is to find a set of variables which are not colinear (because
+the PCA components are roughly at right angles).
+
+# Logistic Regression
+
+Another very common method of classification is logistic regression. A
+regular linear regression seeks a set of coefficients by which we
+multiply our data (plus an offset) which we hope predicts a linearly
+distributed function.A logistic regression transforms a classification
+into a linear regression by trying to model the odds of an element being
+in one class or another. The basic idea is that the log-odds of being in
+the class of interest are approximately linear:
+
+$$
+log(\frac{p}{1-p}) = \sum_{i}{x_i \times b_i}
+$$
+
+(NB - we can do all sorts of generalized regressions with different
+"link functions").
+
+Even though our labels are either class A or B, we can still use them to
+fit this model.
+
+Note that we are using "glm" here, not "lm". The "g" is for
+"generalized" which means that we can use a link function.
+
+```{r}
+iris_ss_glm <- iris_ss %>% mutate(is_virginica=Species=="virginica");
+r <- glm(is_virginica ~ Sepal.Length +
+             Sepal.Width +
+             Petal.Length +
+             Petal.Width, data=iris_ss_glm, family=binomial);
+summary(r)
+```
+
+Given a glm fit we can apply it to data to extract our log-odds of being
+virginica like this:
+
+```{r}
+predict(r, newdata=iris_ss_glm)
+```
+
+These numbers are *not* probabilities. We can, of course, simply
+exponentiate them ourselves to recover the probabilities but R will do
+this for us.
+
+```{r}
+predict(r, newdata=iris_ss_glm, type="response");
+```
+
+This case our results are trivial. We can get a slightly less trivial
+result my trying to predict whether a car is manual or automatic based
+on its gas mileage, horsepower and number of cylinders:
+
+```{r}
+r <- glm(am ~ mpg + hp + cyl, family=binomial, data=mtcars);
+summary(r)
+plot(r)
+p_am <- predict(r, newdata=mtcars, type="response");
+
+```
+
+Typically we want to convert these probabilities to an assignment:
+
+```{r}
+mtcars_ex <- mtcars %>% mutate(am_predicted=(p_am > 0.5)*1.0);
+mtcars_ex %>% group_by(am, am_predicted) %>% tally()
+
+```
+
+# Wait, What?
+
+Does any of what we've done make sense?
+
+What is the usual story for using these methods in the real world?
+Typically the labels represent something of value (eg: this meter broke
+within the next two weeks). Labels like this can be very hard to come by
+and its often the case that they represent rare conditions.
+
+So, we are given a data set from which we want to predict some condition
+and which itself is probably strongly biased towards that condition.
+Sometimes its easy to get "null" cases and sometimes it isn't.
+
+In either case, when performing classification, we must handle at least
+two important concerns:
+
+1.  How do we validate our model? What if our sample is biased in some
+    way?
+2.  How do we handle very lopsided situations. For example, we may be
+    training for a very unusual condition.
+
+The solutions to these problems:
+
+1.  Use cross validation.
+2.  Understand various types of errors and what their practical costs
+    are.
+
+# Train, Test Split
+
+When evaluating the performance of a single model its critical that we
+have a data set available against which to test the results. This must
+be a set which has been withheld from the training process because
+otherwise our model can always just remember each case we've given it
+and give us the right classification. This is unlikely to be the case in
+very simple models, but it is well within the capability of most neural
+networks to just remember every single training example.
+
+Such models will typically not generalize well. But beyond that problem,
+we can't accurately predict the performance of our model in the real
+world without some testing data held out.
+
+Our process should thus look something like:
+
+```{r}
+select <- dplyr::select;
+
+mtcars_tt <- mtcars %>% group_by(am) %>% mutate(train=runif(length(am))<0.5) %>% ungroup();
+test <- mtcars_tt %>% filter(train==FALSE) %>% select(-train);
+train <- mtcars_tt %>% filter(train==TRUE) %>% select(-train);
+
+model <- glm(am ~ mpg + hp + cyl, family=binomial, data=train);
+
+test_p <- 1.0*(predict(model, newdata=test, type="response") > 0.5);
+
+test %>% mutate(am_predicted=test_p) %>% group_by(am, am_predicted) %>% tally()
+
+```
+
+Typically our test set performance will be worse than our training set
+performance. If they are very close take a second look, because this may
+indicate that your train test split was bad in some way (recall our data
+problems lecture).
+
+Once we have a test set we can talk about the four canonical statistics
+that we use to understand our results:
+
+# Understanding the Results
+
+We can characterize our results in the following ways:
+
+1.  true positive rate: how often are positive cases classified as
+    positive?
+2.  true negative rate: how often are negative cases classified as
+    negative?
+3.  false positive rate: how often are negative cases classified as
+    positive?
+4.  false negative rate: how often are positive cases classified as
+    negative?
+
+You also see other measures which may be interesting:
+
+1.  accuracy: The proportion classified correctly.
+2.  recall or sensitivity: the number of true positives divided by the
+    total number of positives. You can also calculate the true negative
+    rate similarly.
+3.  precision: true positive count over the number of all objects
+    classified as positive.
+
+The most important metrics are often recall and precision.
+
+A model with good recall is good at picking out the positives from the
+data set. A model with good precision is good at avoiding false
+positives.
+
+Most people new to classification will assume that the *accuracy* is the
+most useful or meaningful measure but in many common situations it is
+not.
+
+It is easy to see why:
+
+We are asked to build a classifier for pancreatitis by using the color
+(r, g, b) values of the whites of the eyes taken under controlled
+conditions. However, pancreatitis is a very rate condition, affecting
+less than 1% of everyone who is tested.
+
+Thus, a very good classifier by accuracy alone is to simply always guess
+that the patient does not have the disease. This model is very accurate
+but also totally useless.
+
+Another very accurate model is to guess randomly that the patient has
+pancreatitis in proportion to the known rate in the training data. This
+will actually be a slightly better model, since it will occasionally get
+a pancreatitis diagnosis right from time to time, but it still doesn't
+actually tell us anything. (It will also have high false positive and
+false negative rates).
+
+# What you have to understand
+
+In one way or another you must understand the differential costs of each
+type of error. These determine the rational course of action.
+
+For instance, if the cost of failing to diagnosis pancreatitis is
+certain death for the patient *and* the costs for subsequent tests were
+somehow zero, then the best classifier would be one that *always*
+returns "yes".
+
+In a more realistic situation, you want to balance the risks. If early
+detection reduces the total cost of treatment from \$8000 to \$1000 and
+the cost of a much more accurate test is \$500 then a bias towards
+positive results is acceptable until:
+
+$$ fp*500 > fn*7000 $$
+
+In general, you want to take the expected cost as a function of a
+threshold for diagnosis k and minimize the expected cost:
+
+$$
+\min_{k} E(k) = \text{Pr}(p > k) \times (p \times C_{\text{TP}} + (1-p) \times C_{\text{FP}}) + \text{Pr}(p \leq k) \times (p \times C_{\text{FN}} + (1-p) \times C_{\text{TN}})
+$$
+
+Unfortunately in many situations estimating the cost of each situation
+is difficult or impossible. Thus we often need ways of communicating the
+quality of the model that convey the importance of all these situations.
+
+# F1 Score
+
+The so-called F1 score is often used as a balanced way to provide a
+single number that characterizes a binary classifier:
+
+$$
+f_1 := precision \times recall /(precision + recall) 
+$$
+
+This is a geometric mean of the precision and recall and usually gives
+you a good idea of the power of your model even when the positive case
+is rare in the data set. You can imagine a family of scores
+
+$$
+F_{\beta} = (1 + \beta^2) \frac{\text{Precision} \times \text{Recall}}{\beta^2 \times \text{Precision} + \text{Recall}}
+$$
+
+By adjusting $\beta$ we can adjust the relative importance of precision
+over recall. While this score is better than reporting accuracy in
+situations where the is a large class imbalance, it still requires a
+particular choice. Ultimately whether you prefer precision or recall
+kind of depends on what your costs associated with false and true
+positive and negatives are.
+
+# ROC Curves
+
+It is useful to have a characterization of the performance of a
+classifier which is independent of these questions of precision, recall,
+type 1 or type 2 errors, etc. Most sorts of binary classification
+algorithms give you back a *probability* of belonging to the positive
+class. You tune your model (for instance, for precision or recall) by
+adjusting the threshold probability for which you assign a positive
+prediction.
+
+The idea is that we true positive rate vs the false positive rate for
+all threshold between 0 and 1.
+
+```{r}
+
+mtcars_tt <- mtcars %>% group_by(am) %>% mutate(train=runif(length(am))<0.5) %>% ungroup();
+test <- mtcars_tt %>% filter(train==FALSE) %>% select(-train);
+train <- mtcars_tt %>% filter(train==TRUE) %>% select(-train);
+
+
+test <- test %>% mutate(am_prob_pred=predict(model, newdata=test, type="response"));
+
+model <- glm(am ~ mpg + hp + cyl, family=binomial, data=train);
+
+rate <- function(a){
+    sum(a)/length(a);
+}
+
+maprbind <- function(f,l){
+    do.call(rbind, Map(f, l));
+}
+
+roc <- maprbind(function(thresh){
+    ltest <- test %>% mutate(am_pred=1*(am_prob_pred>=thresh)) %>%
+        mutate(correct=am_pred == am);
+    tp <- ltest %>% filter(ltest$am==1) %>% pull(correct) %>% rate();
+    fp <- ltest %>% filter(ltest$am==0) %>% pull(correct) %>% `!`() %>% rate();
+    tibble(threshold=thresh, true_positive=tp, false_positive=fp);
+}, seq(from=0, to=1, length.out=10)) %>% arrange(false_positive, true_positive)
+
+ggplot(roc, aes(x = false_positive, y = true_positive)) +
+  geom_line() +
+  geom_abline(intercept = 0, slope = 1, linetype = "dotted") +
+  geom_ribbon(aes(ymax = true_positive, ymin = false_positive), alpha = 0.2)
+
+```
+
+When the area under the ROC curve is 1 then your classifier is perfect
+under all circumstances. When it is just 1/2 then its bad. Note that the
+worst ROC curve kind of gives you the behavior of one of our "dumb"
+models that just guesses randomly.
+
+# Multiple Categories
+
+Almost the same considerations apply when we have multiple categories.
+The simplest way to approach such problems is to treat them as a
+combinatorial set of two-way classifiers and there are R packages which
+will handle this for you.
+
+But the fundamental ideas are the same, if more complicated. You must
+hold out a set for testing and you must appreciate the sorts of
+predictions you want to make. What kinds of errors are acceptable? Which
+are not?
+
+# The Big Guns
+
+There has been substantial progress in classification in the last 10
+years. A series of methods based on decision trees have come to dominate
+the field.
+
+A full explanation of these methods is beyond both the scope of the
+course and my abilities but the general idea is easy enough to grasp.
+
+To classify entities you build a giant decision tree which partitions
+the space of your data into small groups. With a small enough set of
+subsets, the sets each contain only one type of point.
+
+Note the reappearance of purely local action here. This is like spectral
+clustering in the sense that we solve the problem of the manifold
+embedding by narrowing our focus onto only local information and it has
+the same problems: overfitting and lack of interpretation.
+
+Nevertheless, these can be very useful methods. For instance, if we
+cannot find a generalizable classifier that works using these methods,
+then its reasonable to assert that the training data doesn't contain
+enough information to split the set.
+
+A good approach as a data scientist is to start with these very
+aggressive methods to demonstrate feasibility and then to employ less
+powerful methods to ensure generalization, simplicity and
+interpretability if required.
+
+# Example: Gender and Superpowers
+
+We will use the R package "gbm" which implements a very successful and
+useful algorithm called Adaboost.
+
+First we prep our data.
+
+```{r}
+genders <- read_csv("source_data/prime_earth_characters.csv") %>%
+    filter(property_name=="gender") %>% select(-property_name, -universe) %>%
+    rename(gender=value);
+powers <- read_csv("source_data/prime_earth_powers.csv") %>%
+    select(power, character);
+
+power_counts <- powers %>% group_by(power) %>% tally() %>% arrange(desc(n));
+common <- power_counts %>% pull(power) %>% head(20);
+uncommon <- power_counts %>% filter(!(power %in% common)) %>% pull(power);
+
+powers_wide <- powers %>% mutate(power = {
+    p <- power;
+    p[p %in% uncommon] <- "other";
+    p
+}) %>% distinct() %>%
+    mutate(dummy=1) %>%
+    pivot_wider(id_cols="character", names_from="power", values_from="dummy", values_fill=list(dummy=0));
+
+data <- genders %>%
+    inner_join(powers_wide, by="character") %>%
+    mutate(across(everything(), factor)) %>% filter(gender %in% c("male", "female")) %>%
+    mutate(is_female=1*(gender=="female"));
+data
+
+```
+
+Now we just need to build our formula to use gbm.
+
+```{r}
+
+explanatory <- data %>% select(-character, -gender, -is_female) %>% names()
+formula <- as.formula(sprintf("is_female ~ %s", paste(explanatory, collapse=" + ")));
+
+tts <- runif(nrow(data)) < 0.5;
+
+train <- data %>% filter(tts);
+test <- data %>% filter(!tts);
+
+library(gbm);
+
+model <- gbm(formula, data=train);
+
+prob <- predict(model, newdata=test, type="response");
+
+test_ex <- test %>% mutate(is_female_pred=1*(prob>0.5));
+
+name_map = list("0:0"="true negative",
+                "0:1"="false positive",
+                "1:0"="false negative",
+                "1:1"="true positive");
+
+confusion <- test_ex %>% group_by(is_female, is_female_pred) %>% tally() %>% 
+  mutate(rate_type=name_map[sprintf("%d:%d", is_female, is_female_pred)] %>% unlist()) %>%
+  select(-is_female, -is_female_pred) %>%
+  transmute(rate_type=rate_type, rate = n/sum(n))
+confusion
+```
+
+A really handy thing to do is look at the model summary:
+
+```{r}
+summary(model);
+```
+
+Note that with such a model these rankings can be a little confusing. If
+there exists strong correlations between our variables, then in one
+realization of the model the two powers may be inverted or appear in
+some other order.
+
+Still, if you recall our chart of powers by gender we see some of the
+same variables here.
+
+```{r}
+# Calculate the ROC curve
+roc_curve <- pROC::roc(test$is_female, prob)
+
+# Plot the ROC curve
+ggplot(data.frame(x = roc_curve$specificities, y = roc_curve$sensitivities), aes(x = 1 - x, y = y)) +
+  geom_line() +
+  geom_abline(intercept = 0, slope = 1, linetype = "dotted") +
+  ggtitle("ROC Curve")
+
+```
+
+# Concluding Notes
+
+There is one lurking horror in all this. Everything we've done depends
+on our train test split, which is random. That means the performance of
+our classifier (however we measure it) is itself a random variable. That
+means that we can't just report our numbers - there is a good chance
+that if we over (or understate) our performance on unknown data. That
+subject is what we will talk about in the next class.

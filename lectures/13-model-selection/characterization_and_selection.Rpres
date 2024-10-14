@@ -1,0 +1,436 @@
+Model Characterization and Selection
+========================================================
+author: Vincent Toups
+date: 11 Sept 2020
+width:1400
+height:800
+css:style.css
+
+![](./images/800px-Carrots_of_many_colors.jpg)
+
+Suppose you train a model:
+==========================
+
+```{r echo=FALSE, include=FALSE}
+library(tidyverse);
+source("utils.R");
+info <- read_csv("./source_data/datasets_26532_33799_heroes_information.csv") %>%
+    drop_na() %>% 
+    nice_names() %>%
+    mutate(female=gender=='Female',
+           train=runif(nrow(.))<0.5,
+           hair_color = hair_color ,
+           hair_blond = hair_color == "Blond") %>%
+    filter(height > 0 & weight > 0);
+stats <- read_csv("./source_data/datasets_38396_60978_charcters_stats.csv") %>%
+    drop_na() %>%
+    nice_names();
+
+hair_table <- table(info$hair_color);
+
+info <- info %>% mutate(hair_color_simplified=hair_color) %>%
+    mutate(hair_color_simplified=(function(hcs){
+        hcs[hair_table[hcs]<10] = "Other";
+        hcs
+    })(hair_color_simplified)) %>%
+    mutate(hair_color_simplified = factor(hair_color_simplified));
+```
+
+```{r}
+info
+```
+
+```{r}
+model.glm <- glm(female ~ height + weight + I(height^2) + I(weight^2) + height:weight + hair_color_simplified, info %>% filter(train), family="binomial");
+summary(model.glm);
+```
+
+***
+
+```{r}
+test <- info %>% filter(!train);
+test$female.p <- predict(model.glm, test, type="response");
+ggplot(test, aes(female.p)) + geom_density();
+```
+
+```{r}
+c(sum((test$female.p>0.5)==test$female)/nrow(test),sum(FALSE==test$female)/nrow(test));
+```
+
+Suppose you train a model:
+==========================
+
+```{r}
+library(gbm);
+model.gbm <- gbm(female ~ height +
+                     weight +
+                     I(height^2) +
+                     I(weight^2) +
+                     height:weight +
+                     hair_color_simplified,
+                 distribution="bernoulli",
+                 info %>% filter(train),
+                 n.trees = 200,
+                 interaction.depth = 5,
+                 shrinkage=0.1);
+summary(model.gbm,plot=FALSE)
+```
+
+***
+
+```{r echo=FALSE}
+test$female.p.gbm <- predict(model.gbm, test, type="response", n.trees=200);
+ggplot(test, aes(female.p.gbm)) + geom_density();
+```
+
+```{r}
+c(sum((test$female.p.gbm>0.5)==test$female)/nrow(test),
+  sum((test$female.p>0.5)==test$female)/nrow(test),
+  sum(FALSE==test$female)/nrow(test));
+```
+
+Which Model is Better?
+======================
+
+```{r}
+c(sum((test$female.p.gbm>0.5)==test$female)/nrow(test),
+  sum((test$female.p>0.5)==test$female)/nrow(test),
+  sum(FALSE==test$female)/nrow(test));
+```
+
+This is an ill-posed question so far - each of the numbers above
+depends on the random process of splitting our data set into test and
+train sets.
+
+What is the expected value of some model characterization parameter in
+the limit of infinite data? What about variation?
+
+Model Selection
+===============
+
+This is "model selection." It would be trivial if we had access to an
+infinite amount of data (of course, in that case, we'd just train a
+neural network or tree based model). But when you have a limited
+amount of data it presents challenges.
+
+K-Fold Cross Validation
+=======================
+
+1. Take K "folds".
+2. set aside 1 of them for testing
+3. collect model performance
+
+![](./images/cross-validation.png)
+By Gufosowa - Own work, CC BY-SA 4.0, https://commons.wikimedia.org/w/index.php?curid=82298768
+
+Bootstrapping
+=============
+
+Sample from the data with replacement and repeat the modelling process
+many times.
+
+By Hand
+=======
+
+```{r}
+
+k_folds <- function(k, data, trainf, statf){
+    n <- nrow(data);
+    fold_id <- sample(1:k, n, replace=TRUE);
+    do.call(rbind, Map(function(fold){
+        train <- data %>% filter(fold != fold_id);
+        test <- data %>% filter(fold == fold_id);
+        model <- trainf(train);
+        stat <- statf(model, test);
+        tibble(fold=fold, stat=stat);
+    },1:k));
+}
+```
+
+Usage
+=====
+
+```{r}
+library(gbm);
+n_folds <- 50;
+form <- female ~ height +
+                     weight +
+                     I(height^2) +
+                     I(weight^2) +
+                     height:weight +
+                     hair_color_simplified;
+res.glm <- k_folds(n_folds,info,
+               function(data){
+                   glm(form, data, family="binomial");
+               },
+               function(model, data){
+                   p <- predict(model, data, type="response");
+                   sum((p>0.5) == data$female)/nrow(data);
+               }) %>% mutate(model="glm");
+res.gbm <- k_folds(n_folds,info,
+               function(data){
+                   gbm(female ~ height +
+                     weight +
+                     I(height^2) +
+                     I(weight^2) +
+                     height:weight +
+                     hair_color_simplified,
+                 distribution="bernoulli",
+                 data,
+                 n.trees = 200,
+                 interaction.depth = 5,
+                 shrinkage=0.1);
+               },
+               function(model, data){
+                   p <- predict(model, data, type="response", n.trees=200);
+                   sum((p>0.5) == data$female)/nrow(data);
+               }) %>% mutate(model="gbm");
+res.dumb <- k_folds(n_folds,info,
+               function(data){
+                   NULL;
+               },
+               function(model, data){
+                   sum(FALSE == data$female)/nrow(data);
+               }) %>% mutate(model="dumb");
+res <- rbind(res.glm, res.gbm, res.dumb);
+```
+***
+```{r echo=FALSE}
+ggplot(res, aes(stat)) + geom_density(aes(fill=model),alpha=0.5);
+```
+Might be worth the simpler story to use the GLM in this case.
+
+Selection vs Characterization
+=============================
+
+So far we've conflated characterization with selection. They are
+related, obviously: we want to select the best (characterized) model.
+
+But when we get into the world of R packages, they tend to be
+separated.
+
+Enter The Caret
+===============
+
+Caret is a package for characterization and tuning.
+
+http://topepo.github.io/caret/index.html
+
+1. It will help you tune parameters of a given model type.
+2. It is not as useful for selecting between various models (either
+   types or input parameters). It can help you characterize.
+   
+Caret Example
+=============
+
+```{r}
+library(caret);
+
+trainIndex <- createDataPartition(info$female, p = .8, 
+                                  list = FALSE, 
+                                  times = 1)
+
+info$female <- factor(info$female);
+
+train_ctrl <- trainControl(method = "cv", number = 50);
+gbmFit1 <- train(form, data = info %>% slice(trainIndex), 
+                 method = "gbm", 
+                 trControl = train_ctrl,
+                 ## This last option is actually one
+                 ## for gbm() that passes through
+                 verbose = FALSE)
+summary(gbmFit1);
+```
+***
+```{r}
+gbmFit1
+```
+
+Caret Example GLM
+=================
+
+```{r}
+library(caret);
+
+trainIndex <- createDataPartition(info$female, p = .8, 
+                                  list = FALSE, 
+                                  times = 1)
+
+train_ctrl <- trainControl(method = "cv", number = 50);
+glmFit1 <- train(form, data = info %>% slice(trainIndex), 
+                 method = "glm",
+                 family = "binomial",
+                 trControl = train_ctrl)
+summary(glmFit1);
+```
+***
+```{r}
+glmFit1
+```
+
+Kappa
+=====
+
+$$
+\kappa = \frac{2 \times (TP \times TN - FN \times FP)}{(TP + FP) \times (FP + TN) + (TP + FN) \times (FN + TN)}
+$$
+
+"Cohen's kappa measures the agreement between two raters who each classify N items into C mutually exclusive categories...  If the raters are in complete agreement then κ = 1. If there is no agreement among the raters other than what would be expected by chance (as given by pe), κ = 0. It is possible for the statistic to be negative which implies that there is no effective agreement between the two raters or the agreement is worse than random."
+
+[Cohen's kappa Wikipedia Article](https://en.wikipedia.org/wiki/Cohen%27s_kappa)
+
+Supported Model Types
+=====================
+
+Caret supports a large variety of models beyond GLMs and GBMs. See [the
+docs](https://topepo.github.io/caret/index.html).
+
+We've just scratched the surface here.
+
+Model (Parameter) Selection
+===========================
+
+A related problem here is what pieces of data we use as predictors in
+our model. This is a form of model selection as well.
+
+Caret supports various methods for feature selection. We'll
+demonstrate recursive feature elimination:
+
+![](./images/rfe-Algo2.png)
+
+Via Caret
+=========
+
+This turns out to be broken for lmFuncs
+```
+
+rfe_ctrl <- rfeControl(functions = lmFuncs, method = "repeatedcv", repeats = 5, verbose = TRUE);
+
+for (nm in names(info)){
+    if(is.character(info[[nm]])){
+        info[[nm]] <- factor(info[[nm]]);
+    }
+}
+
+results <- rfe(info %>% slice(trainIndex) %>%
+               select(height, weight, hair_color_simplified, alignment) %>% as.data.frame(),
+               info %>% slice(trainIndex) %>%
+               mutate(female=as.logical(female)*1) %>%
+               select(female) %>%               
+               `[[`("female"),
+               rfeControl=rfe_ctrl);
+summary(results);
+```
+
+Doing it Ourselves
+==================
+
+Pre-treatment:
+
+```{r}
+library(tidyverse);
+source("utils.R");
+info <- read_csv("./source_data/datasets_26532_33799_heroes_information.csv") %>%
+    drop_na() %>% 
+    nice_names() %>%
+    mutate(female=gender=='Female',
+           train=runif(nrow(.))<0.5,
+           hair_color = hair_color) %>%
+    filter(height > 0 & weight > 0) %>%
+    select(-name);
+other_rare_elements <- function(values, thresh){
+    tbl <- table(values)/length(values);
+    values[tbl[values]<thresh] <- "other";
+    values;
+}
+for (nm in names(info)){
+    if(is.character(info[[nm]])){
+        info[[nm]] <- factor(paste(":",other_rare_elements(info[[nm]],0.2),sep=""));
+    }
+}
+
+```
+
+The iteration:
+==============
+
+```{r include=FALSE, echo=TRUE}
+library(stringr);
+colums_of_interest <- c("height","weight","eye_color","skin_color","publisher");
+trainIndex <- createDataPartition(info$female, p = .8, 
+                                  list = FALSE, 
+                                  times = 1)
+info$female <- factor(info$female);
+extract_var_names <- function(from_gbm){
+    Map(function(a){a[[1]]},
+        str_split(from_gbm,":")) %>% unlist()
+}
+results <- do.call(rbind, Map(function(nv){
+    train_ctrl <- trainControl(method = "cv", number = 50, verbose=FALSE);
+    gbmFit1 <- train(as.formula(sprintf("female ~ %s",
+                             paste(colums_of_interest,collapse=" + "))), data = info %>% slice(trainIndex), 
+                     method = "gbm",
+                     trControl = train_ctrl)
+    var.inf <- summary(gbmFit1$finalModel) %>% as_tibble();
+    old_coi <- paste(colums_of_interest,collapse=" + ");
+    colums_of_interest <<- extract_var_names(var.inf$var[1:nv]);
+    tibble(n_variables=nv, accuracy=max(gbmFit1$results$Accuracy),
+           variables=old_coi);
+},seq(from=length(colums_of_interest)-1,to=1,by=-1)));
+results;
+```
+
+```
+library(stringr);
+colums_of_interest <- c("height","weight","eye_color","skin_color","publisher");
+trainIndex <- createDataPartition(info$female, p = .8, 
+                                  list = FALSE, 
+                                  times = 1)
+info$female <- factor(info$female);
+extract_var_names <- function(from_gbm){
+    Map(function(a){a[[1]]},
+        str_split(from_gbm,":")) %>% unlist()
+}
+results <- do.call(rbind, Map(function(nv){
+    train_ctrl <- trainControl(method = "cv", number = 50, verbose=FALSE);
+    gbmFit1 <- train(as.formula(sprintf("female ~ %s",
+                             paste(colums_of_interest,collapse=" + "))), data = info %>% slice(trainIndex), 
+                     method = "gbm",
+                     trControl = train_ctrl)
+    var.inf <- summary(gbmFit1$finalModel) %>% as_tibble();
+    old_coi <- paste(colums_of_interest,collapse=" + ");
+    colums_of_interest <<- extract_var_names(var.inf$var[1:nv]);
+    tibble(n_variables=nv, accuracy=max(gbmFit1$results$Accuracy),
+           variables=old_coi);
+},seq(from=length(colums_of_interest)-1,to=1,by=-1)));
+results;
+```
+
+
+
+```{r echo=FALSE, include=TRUE}
+results
+```
+
+Conclusions
+===========
+
+Models are themselves random objects that depend on the selection of
+training and testing data.
+
+Thus, we must find a way to estimate their expected properties if we
+are to characterize them accurately.
+
+The methods typically used (if access to arbitarily large test data is
+not available) are:
+
+1. Cross Validation
+   Hold out N samples repeatedly in "folds", train and characterize the model.
+2. Bootstrapping Draw repeatedly from the data set and then split the
+   results into train and test sets. Train your model and calculate
+   the statistics.
+   
+These simple descriptions somewhat understand the complexity of the
+issues involved.
+
+   

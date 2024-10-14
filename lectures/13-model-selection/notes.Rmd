@@ -1,0 +1,651 @@
+---
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+# Model Selection and Characterization
+
+When doing classification, its tempting to do a train/test split,
+evaluate the model and then report to whomever that the accuracy of the
+model (or precision, or whatever) is X.
+
+Similarly, if we want to try different methods of modelling the same
+data (for example, logistic regression vs tree based methods) or we want
+to pick the optimal set of features to use as input, we'd probably be
+tempted to
+
+1.  train each model on the train set
+2.  evaluate each model on the test set
+3.  choose the model with the best accuracy, f1, etc.
+
+This, of course, doesn't make a lot of sense.
+
+Why?
+
+We're interested in the *expected* performance of the model on *new
+data*, for which our train/test split only produces a single estimate.
+We have not established from just one run what, for example, the
+*variance* of our model parameters are.
+
+In order to accurately characterize our model (or models, if we are
+doing selection) we'd ideally like to repeat the entire modeling
+procedure with new samples many times and then estimate the expected
+value and variation of the performance metrics we're interest in.
+
+Unfortunately, we rarely have access to such a large amount of data that
+this can be done without tricks.
+
+Incidentally, this was recently published: [Not frequentist
+enough.](https://statmodeling.stat.columbia.edu/2022/10/05/not-frequentist-enough/)
+
+# Example:
+
+Monday:
+
+```{r}
+library(tidyverse);
+library(gbm);
+library(pROC)
+
+data <- read_csv("source_data/wide_power_gender.csv") %>%
+    mutate(across(setdiff(everything(),one_of("is_female")), factor));
+data
+```
+
+We trained a GBM like this:
+
+```{r}
+
+
+explanatory <- data %>% select(-character, -gender, -is_female) %>% names()
+formula <- as.formula(sprintf("is_female ~ %s", paste(explanatory, collapse=" + ")));
+tts <- runif(nrow(data)) < 0.5;
+train <- data %>% filter(tts);
+test <- data %>% filter(!tts);
+
+model <- gbm(formula, data=train);
+summary(model, plot=FALSE);
+
+
+rates <- function(actual, predicted) {
+    # Existing code for rates
+    positive_ii <- which(!!actual)
+    negative_ii <- which(!actual)
+  
+    true_positive <- sum(predicted[positive_ii]) / length(positive_ii)
+    false_positive <- sum(predicted[negative_ii]) / length(negative_ii)
+    true_negative <- sum(!predicted[negative_ii]) / length(negative_ii)
+    false_negative <- sum(!predicted[positive_ii]) / length(positive_ii)
+    accuracy = sum(actual == predicted) / length(actual)
+    
+    # Calculate AUC
+    if(length(unique(actual)) > 1) {
+        roc_obj <- roc(actual, as.numeric(predicted))
+        auc_value <- as.numeric(auc(roc_obj))
+    } else {
+        auc_value <- NA
+    }
+    
+    tibble(true_positive = true_positive,
+           false_positive = false_positive,
+           false_negative = false_negative,
+           true_negative = true_negative,
+           accuracy = accuracy,
+           AUC = auc_value)
+}
+rates(test$is_female, 1*(predict(model, newdata=test, type="response")>0.5))
+
+```
+
+How can we produce an estimate for the expected values of these numbers?
+
+# K-Fold Cross Validation
+
+The idea here is to simulate having more data by repeating our train
+test split in a very specific way. We are going to "walk down" the data
+set in steps of K and re-run our model. This is easy enough for you to
+implement yourself:
+
+```{r}
+
+shuffle <- function(a){
+    sample(a, length(a), replace=F);
+}
+
+k_fold <- function(k, data, formula, model_function, characterization){
+    folds <- shuffle(floor(k*(1:nrow(data)-1)/nrow(data))+1);
+    fold_size <- mean(table(folds) %>% as.numeric());
+    print(sprintf("Average fold size %f", fold_size))
+    do.call(rbind, Map(function(k){
+        train <- data %>% filter(folds != k);
+        test <- data %>% filter(folds == k);
+        model <- model_function(formula, train);
+        characterization(model, test);
+    }, seq(k)));
+}
+
+results <- k_fold(20, data, formula,
+                  function(f, d){
+                      gbm(f, data=d);
+                  },
+                  function(m, test){
+                      rates(test$is_female,
+                            1*(predict(m, newdata=test, type="response")>0.5));
+                  });
+
+dumb_accuracy <- sum(data$is_female == 0)/nrow(data);
+
+ggplot(results, aes(accuracy)) + geom_density() +
+    geom_segment(aes(x=accuracy, xend=accuracy, y=0, yend=0.5)) +
+    geom_segment(x=dumb_accuracy, xend=dumb_accuracy, y=0, yend=7, color="red");
+
+ggplot(results, aes(AUC)) + geom_density() +
+    geom_segment(aes(x=AUC, xend=AUC, y=0, yend=0.5));
+
+```
+
+What this tells us is that (assuming we have a reliable estimate for the
+proportion of male and female characters) we can reasonably say that a
+randomly chosen model has about a 40% chance of being *less accurate*
+than the dumbest model (guessing "male" all the time).
+
+Out of curiosity, let's repeat this process with a logistic regression:\
+
+```{r}
+shuffle <- function(a) {
+    sample(a, length(a), replace = FALSE)
+}
+
+k_fold <- function(k, data, formula, model_function, characterization) {
+    folds <- shuffle(floor(k * (1:nrow(data) - 1) / nrow(data)) + 1)
+    fold_size <- mean(table(folds) %>% as.numeric())
+    print(sprintf("Average fold size %f", fold_size))
+    do.call(rbind, Map(function(k) {
+        train <- data %>% filter(folds != k)
+        test <- data %>% filter(folds == k)
+        model <- model_function(formula, train)
+        characterization(model, test)
+    }, seq(k)))
+}
+
+results <- k_fold(20, data, formula,
+                  function(f, d) {
+                      glm(f, data = d, family = binomial)
+                  },
+                  function(m, test) {
+                      rates(test$is_female,
+                            1 * (predict(m, newdata = test, type = "response") > 0.5))
+                  })
+
+dumb_accuracy <- sum(data$is_female == 0) / nrow(data)
+
+ggplot(results, aes(accuracy)) + geom_density() +
+    geom_segment(aes(x = accuracy, xend = accuracy, y = 0, yend = 0.5)) +
+    geom_segment(x = dumb_accuracy, xend = dumb_accuracy, y = 0, yend = 7, color = "red")
+
+ggplot(results, aes(AUC)) + geom_density() +
+    geom_segment(aes(x = AUC, xend = AUC, y = 0, yend = 0.5))
+
+```
+
+# Issues with Cross Validation
+
+When we train models with k-fold cross validation the testing sets we
+use for each fold are uncorrelated (they do not have any overlapping
+elements) but for each model we calculate we have significant overlap in
+training examples, which increases the variance of the estimated values
+we are calculating. There doesn't seem to be a consistent theory on the
+challenges of picking a correct cross validation procedure. As is often
+the case with this kind of thing, the best we can do is try to follow
+standard practice or become expert statisticians.
+
+# Vs Bootstrapping
+
+You may also encounter bootstrapping as a method of characterizing a
+model. In this method, you train on a sample (with replacement) from
+your data and test on the data set of those data points not in the
+bootstrap. You can repeat this a bunch of times as well.
+
+Bootstrapping isn't as commonly used as a model characterization step,
+but turns out to be useful in various tree based methods of regression
+and calculation.
+
+# Parameter Tuning
+
+Our gradient boosting machine/Adaboost classifier actually has some
+tunable parameters which we've ignored so far. These are so-called
+"hyperparameters" because they are knobs you have on the model which you
+can tune by hand but are not tuned by the training process.
+
+We'd often like to choose optimal values for the hyperparameters.
+
+Now you know how you might do this in practice: select pair of
+hyperparameter settings, characterize the models, estimate the mean
+performance of each model using k-fold cross validation, and select the
+better of the two sets of hyperparameters.
+
+This is doable with plain R but libraries exist to do the work for us.
+
+# Enter Caret
+
+The Caret library is a very extensive package for model characterization
+and selection.
+
+The upside of using Caret is that if your model type is supported it
+will do all the work for you. The downside is that the interpretation of
+the results is a little trick and it can be a little harder to work with
+than simply running your model once.
+
+# Example: Tuning our GBM
+
+Our GBM has a few tunable parameters.
+
+1.  n.trees - the number of different tress that "vote" on our instances
+2.  interaction.depth - how many decisions in each tree
+3.  shrinkage - a parameter that has to do with how each step of the
+    algorithm modifies the prediction of the model
+
+```{r}
+library(caret);
+
+trainIndex <- createDataPartition(data$is_female, p = .8, 
+                                  list = FALSE, 
+                                  times = 1)
+
+egdata <- data;
+
+egdata$is_female <- factor(egdata$is_female);
+
+train_ctrl <- trainControl(method = "cv", number = 50);
+gbmFit1 <- train(formula, data = egdata %>% slice(trainIndex), 
+                 method = "gbm", 
+                 trControl = train_ctrl,
+                 ## This last option is actually one
+                 ## for gbm() that passes through
+                 verbose = FALSE)
+summary(gbmFit1);
+gbmFit1
+
+test_data <- egdata %>% slice(-trainIndex)
+
+# Get predicted probabilities
+predicted_probs <- predict(gbmFit1, newdata = test_data, type = "prob")[,1]
+
+# Create ROC curve
+roc_obj <- roc(test_data$is_female, predicted_probs)
+
+# Plot ROC curve
+plot(roc_obj, main="ROC Curve", col="blue")
+
+```
+
+The result here is a table of hyperparameters and their accuracy and
+kappa values.
+
+(NB: kappa: $$
+\kappa = \frac{2 \times (TP \times TN - FN \times FP)}{(TP + FP) \times (FP + TN) + (TP + FN) \times (FN + TN)}
+$$
+
+"Cohen's kappa measures the agreement between two raters who each
+classify N items into C mutually exclusive categories... If the raters
+are in complete agreement then κ = 1. If there is no agreement among the
+raters other than what would be expected by chance (as given by pe), κ =
+0. It is possible for the statistic to be negative which implies that
+there is no effective agreement between the two raters or the agreement
+is worse than random."
+
+[Cohen's kappa Wikipedia
+Article](https://en.wikipedia.org/wiki/Cohen%27s_kappa))
+
+# Moral
+
+If you are using a complicated model, you probably want to use Caret to
+tune the hyperparameters. At least think about it.
+
+Deeper moral: if you are at the point of fine tuning parameters, you're
+model situation probably doesn't work that well anyway!
+
+# Feature Selection
+
+Consider our model summary:
+
+```{r}
+summary(gbmFit1);
+```
+
+Maybe we can improve our model by using a subset of these columns?
+
+We could just try it:
+
+```{r}
+smaller_formula <- is_female ~ unique_physiology + immortality + superhuman_agility + flight;
+smodel <- gbm(smaller_formula, data=train, n.trees=100, interaction.depth=2);
+
+rates(test$is_female, 1*(predict(smodel, newdata=test, type="response")>0.5))
+
+predicted_probs <- predict(smodel, newdata=test, type="response")
+roc_obj <- roc(test$is_female, predicted_probs)
+
+# Plot ROC curve
+plot(roc_obj, main="ROC Curve", col="blue")
+
+```
+
+But there is a pretty big exponential explosion in trying to do this
+kind of selection. There are various strategies to tame this complexity.
+
+# Recursive Feature Elimination
+
+The basic approach is to
+
+1.  Fit a model with N variables
+2.  
+    a.  Find the parameter with the least strength
+    b.  characterize the model performance
+3.  Remove that one, go back to 1
+
+Show the results.
+
+We don't have to do this by hand, but using RFE with Caret for GBM
+models is a bit of a hassle.
+
+#### Sidebar: APIs
+
+Consider this problem of recursive feature elimination. It is an
+algorithm which is "abstract" with respect to the question of exactly
+*how* you perform your modelling. All we need to know to do RFE is how
+to fit our model, how to predict with it, and how to calculate a score.
+These activities are unfortunately not standardized across all the ways
+you can do them in R. But what if we wrote the right "glue" so that if a
+model doesn't behave the way Caret expects, we map what we have to what
+RFE expects. Those requirements constitute an "interface" to RFE.
+Sometimes Interfaces can be just functions *we* call, but sometimes we
+can provide the functions to the library then *it* calls them.
+
+We need to implement an API.
+
+```{r}
+gbmFit <- function(x, y, first, last, ...){
+    df <- x %>% as_tibble() %>% mutate(to_predict=y);
+    formula <- as.formula(sprintf("to_predict ~ %s",paste(names(x),collapse=" + ")));
+    model <- gbm(formula, distribution="bernoulli", data=df, ...);
+    model
+}
+
+gbmPred <- function(model, x){
+    predict(model, newdata=x, type="response")
+}
+
+gbmRank <- function(model, x, y){
+    summary(model) %>% as_tibble() %>% rename(Overall=rel.inf);
+}
+
+gbmFuncs <- list(
+    fit=gbmFit,
+    pred=gbmPred,
+    rank=gbmRank,
+    selectSize=function (x, metric, maximize) 
+    {
+        best <- if (maximize) 
+                    which.max(x[, metric])
+                else which.min(x[, metric])
+        min(x[best, "Variables"])
+    },
+    selectVar=function (y, size) 
+    {
+        finalImp <- plyr::ddply(y[, c("Overall", "var")], 
+                                plyr::.(var), 
+                                function(x) mean(x$Overall, 
+                                                 na.rm = TRUE))
+        names(finalImp)[2] <- "Overall"
+        finalImp <- finalImp[order(finalImp$Overall, decreasing = TRUE), 
+                             ]
+        as.character(finalImp$var[1:size])
+    },
+    summary=function(data, lev = NULL, model = NULL) {
+    roc_obj <- roc(data$obs, data$pred);
+    auc_value <- as.numeric(auc(roc_obj))
+    c("Accuracy" = sum(1*(data$pred > 0.5)== data$obs) / length(data$pred),
+      "AUC" = auc_value)
+  }
+);
+
+folds <- createFolds(data$is_female, k = 10, list = TRUE)
+
+# Convert to the 'caret' index format
+indexList <- lapply(folds, function(x) {
+  list(Train = setdiff(seq_len(nrow(data)), x),
+       Test = x)
+})
+
+ctrl <- rfeControl(functions=gbmFuncs,
+                   method="repeatedcv",
+                   repeats=5,
+                   verbose=F,
+                   index=folds);
+
+results <- rfe(data %>% select(all_of(explanatory)), data %>% pull(is_female),
+               sizes=3:21,
+               rfeControl=ctrl,
+               metric="AUC");
+ggplot(results, aes(Variables, AUC)) + geom_line()
+
+```
+
+Gee - what a lot of work to find out that the best model is is the one
+with most. This isn't necessarily surprising. It is also worth noting
+that we don't *really* need to do feature selection for a GBM since it
+kind of does it for you.
+
+While we're here we can try the same thing for a regular logistic
+regression:
+
+```{r}
+glmFit <- function(x, y, first, last, ...){
+    df <- x %>% as_tibble() %>% mutate(to_predict = y)
+    formula <- as.formula(sprintf("to_predict ~ %s", paste(names(x), collapse = " + ")))
+    model <- glm(formula, family = binomial(link = "logit"), data = df, ...)
+    model
+}
+
+glmPred <- function(model, x){
+    predict(model, newdata = x, type = "response")
+}
+
+glmRank <- function(model, x, y){
+  tibble(var=names(model$coefficients), Overall=model$coefficients %>% unname()) %>%
+    arrange(desc(Overall)) %>% filter(var != "(Intercept)") %>% mutate(var = var %>% str_replace_all("[0-9]$",""))
+}
+
+glmFuncs <- list(
+    fit = glmFit,
+    pred = glmPred,
+    rank = glmRank,
+    selectSize = function (x, metric, maximize) {
+        best <- if (maximize) 
+                    which.max(x[, metric])
+                else which.min(x[, metric])
+        min(x[best, "Variables"])
+    },
+    selectVar = function (y, size) {
+        finalImp <- plyr::ddply(y[, c("Overall", "var")], 
+                                plyr::.(var), 
+                                function(x) mean(x$Overall, 
+                                                 na.rm = TRUE))
+        names(finalImp)[2] <- "Overall"
+        finalImp <- finalImp[order(finalImp$Overall, decreasing = TRUE), ]
+        as.character(finalImp$var[1:size])
+    },
+    summary = function(data, lev = NULL, model = NULL) {
+        roc_obj <- roc(data$obs, data$pred)
+        auc_value <- as.numeric(auc(roc_obj))
+        c("Accuracy" = sum(1 * (data$pred > 0.5) == data$obs) / length(data$pred),
+          "AUC" = auc_value)
+    }
+)
+
+folds <- createFolds(data$is_female, k = 10, list = TRUE)
+
+# Convert to the 'caret' index format
+indexList <- lapply(folds, function(x) {
+  list(Train = setdiff(seq_len(nrow(data)), x),
+       Test = x)
+})
+
+ctrl <- rfeControl(functions = glmFuncs,
+                   method = "repeatedcv",
+                   repeats = 5,
+                   verbose = F,
+                   index = folds)
+
+results <- rfe(data %>% select(all_of(explanatory)), data %>% pull(is_female),
+               sizes = 3:21,
+               rfeControl = ctrl,
+               metric = "AUC")
+
+ggplot(results, aes(Variables, AUC)) + geom_line()
+
+```
+
+# Ridge and Lasso regressions
+
+Whenever possible we should prefer simpler models because they are easy
+to explain. A good compromise between the complexity of tree based
+models and the simplicity of linear/logistic regression is ridge or
+lasso regression. These two methods are actually specific examples of
+regularized regressions where we just use two slightly different methods
+of regularization.
+
+In a regular regression, eliding some details, we minimize the sum of
+squares error:
+
+$$
+\begin{equation*} \sum_{i=1}^n (y_i - \sum_{j=1}^p x_{ij}\beta_j)^2  \end{equation*}
+$$
+
+By varying $\beta_{j}$. In a Ridge Regression we add a constraint to
+this process:
+
+$$
+\begin{equation*} \sum_{i=1}^n (y_i - \sum_{j=1}^p x_{ij}\beta_j)^2 + \lambda \sum_{j=1}^p \beta_j^2 \end{equation*}
+$$
+
+The second term penalizes us for using a lot of parameters that are
+large. Note that in this case we really need our parameters to be
+commensurate (typically we accomplish this by normalizing and zeroing
+the variables). What does this do?
+
+[![[Lifted from PSU's Stats Course
+Notes](https://online.stat.psu.edu/stat857/node/155/)](images/ridge.png)](https://online.stat.psu.edu/stat857/node/155/)
+
+The penalty term pulls the Betas towards zero. When two variables are
+colinear this tends to make it favorable to make one term larger than
+the other. Note that this *doesn't* really force the betas to zero. A
+variation on this method, called Lasso, does have this property.
+
+In a Lasso regression we use the penalty term:
+
+$$
+\begin{equation*} \sum_{i=1}^n (y_i - \sum_{j=1}^p x_{ij}\beta_j)^2 + \lambda \sum_{j=1}^p |\beta_j| \end{equation*}
+$$
+
+Here we have taken the absolute value of the beta coefficients, not
+their squared value. The WIkipedia article has a good picture
+contrasting these two approaches:
+
+![Difference Between Lasso and Ridge
+Regression](images/L1_and_L2_balls.svg.png)
+
+The thing to notice here is that the difference in the norm we've used
+forces one of the coefficients to be zero. Since we are talking about
+variable selection, a Lasso regression sort of automatically throws away
+variables. Which among colinear variables are tossed may depend on the
+initial conditions of the optimization procedure. But this is true of
+almost any variable selection method in the case where colinearities
+exist.
+
+``` dockerfile
+RUN R -e "install.packages('glmnet')";
+```
+
+```{r}
+library(glmnet)
+library(tidyverse);
+hero_stats <- read_csv("source_data/datasets_38396_60978_charcters_stats.csv") %>%
+    filter(Total > 5) %>% filter(complete.cases(.)) %>% inner_join(read_csv("source_data/datasets_26532_33799_heroes_information.csv"),by=c("Name","Alignment"));
+
+center_scale <- function(x){
+  maxv <- max(x);
+  minv <- min(x);
+  range <- maxv-minv;
+  (x-minv)/range - 0.5;
+}
+hero_stats <- hero_stats %>% mutate(across(Intelligence:Total, center_scale)) %>%
+  mutate(good = 1*(Alignment == "good"));
+
+plot(hero_stats %>% select(Intelligence, Strength, Speed, Durability, Power, Combat, Total, good));
+```
+
+Lots of colinearity here. Let's try to predict whether a character is
+good from this data. The glmnet library can actually do cross validation
+for us:
+
+```{r}
+library(glmnet)
+results <- cv.glmnet(hero_stats %>% select(Intelligence:Combat) %>% as.matrix(),
+                    hero_stats$good,
+                    alpha=1,
+                    family="binomial");
+plot(results)
+best_model <- glmnet(hero_stats %>% select(Intelligence:Combat) %>% as.matrix(),
+                    hero_stats$good,
+                    alpha=1,
+                    family="binomial",
+                    lambda=results$lambda.min);
+coef(best_model);
+names(best_model)
+hero_stats$good_predicted_p <- (predict(best_model, hero_stats %>% select(Intelligence:Combat) %>% as.matrix(), type="response"))*1;
+hero_stats$good_predicted <- (predict(best_model, hero_stats %>% select(Intelligence:Combat) %>% as.matrix(), type="response") > 0.65)*1;
+confusion <- hero_stats %>% group_by(good, good_predicted) %>% tally()
+
+```
+
+```{r}
+library(pROC)
+# Create ROC curve
+roc_obj <- roc(hero_stats$good, hero_stats$good_predicted_p)
+
+# Plot ROC curve
+plot(roc_obj, main="ROC Curve", col="blue")
+coef(best_model)
+
+```
+
+# Comparing Multiple Models
+
+So far we've looked at two sorts of model comparisons: hyper-parameter
+tuning and variable selection.
+
+After we've tuned our model this way, we may want to compare it to
+another model altogether based on some criteria.
+
+This is the reason you often see a "train, validation and test" split in
+the machine literature.
+
+If you plan on doing multiple model comparisons, the most virtuous thing
+to do is set aside as large of a subset of data as you can as your
+"test" set. Then you can use k-fold cross validation or other strategies
+to characterize your distinct models before finally testing their
+performance on your held out testing set.
+
+# Concluding Notes
+
+The Caret package is kind of the Sherman Tank of model validation and
+selection. In an ideal situation your model will have good performance
+with default parameters and/or a simple model will suffice. Frequently,
+if your model doesn't perform well on its initial pass, then different
+models and/or parameters won't make much of a difference.
+
+Still, in some situations you want to run down the very best model you
+can.
