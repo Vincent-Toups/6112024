@@ -31,5 +31,7 @@ RUN apt-get update && apt-get install -y python3 python3-pip
 # Install the required Python packages
 RUN pip3 install scikit-learn bokeh plotnine
 
+RUN pip3 install scikit-learn bokeh plotnine jupyterlab
+
 # Set the default command to start Emacs
 CMD ["emacs"]

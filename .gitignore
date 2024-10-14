@@ -55,3 +55,5 @@ __pycache__/
 *.jar
 *.war
 *.ear
+
+*.csv
