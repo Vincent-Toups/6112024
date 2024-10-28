@@ -1,0 +1,485 @@
+* The Web, The Browser and RShiny
+
+** Section 0: Interactive Visualization
+
+1. Interactive Visualization is great for your portfolio.
+2. Its really good for the interactive stage of your project.
+3. It is also really compelling. Perhaps too compelling!
+
+Don't let your research get TED-talkified. An interactive
+visualization should eventually yield to some concrete hypothesis
+evaluated rigorously. 
+
+** Section 1: Overview of the Web
+
+Rshiny is a library for R which allows us to build interactive data
+oriented applications which run in a web browser.
+
+The intent is to allow you to exploit the interactivity of the web
+browser without learning the associated technologies (HTTP(S),
+Javascript, HTML, CSS, etc).
+
+This is a laudible goal but some background in these extremely useful
+and absolutely pervasive technologies is good for any technical person
+to have.
+
+*** How the Web Works
+
+Your browser is a client which talks to servers.  In the simplest case
+a server is just something waiting on an ip address (and a port) for a
+client to initiate a connection so that it can respond.
+
+Something called a domain-name server maps names to ip
+addresses. There are a few special cases:
+
+1. localhost is a "domain" which always maps to the local computer
+2. 0.0.0.0 is "any interface" on the local machine. You can think of
+   localhost as resolving to 0.0.0.0
+3. 127.0.0.1 also represents "this machine" 
+
+Most traffic going through your browser uses a protocol called
+HTTP. HTTPS is the secure version of this protocol the details of
+which we will gloss over. More or less from our point of view the two
+are identical.
+
+*** HTTP Requests
+
+You can think of an HTTP request as a single document (the details of
+its representation aren't very important). It does have some
+stereoypical parts, however:
+
+1. HEADER - contains information about the request type, the resource requested, parameters
+2. BODY - may contain anything. Think of it as some text information
+
+The header often contains information for the server about the way to
+interpret the body - it may say that the body is to be understood as
+JSON or a CSV or some other format. 
+
+There are a few request types worth knowing:
+
+1. GET - a request for a resource. Typically doesn't contain a body
+   since it represents a simple request for something.
+2. POST - a request to update a resource on the server. POSTs are used
+   for a lot of things but a nice way to think of POST is "as in POST
+   a Tweet". You update your timeline (the resource) the the tween
+   (some new data).
+3. PUT - A request to replace a resource entirely with the contents of
+   the request. A PUT would be the appropriate message type if you
+   were to replace your profile image on Twitter. You aren't amending
+   your photo. You are replacing it.
+4. DELETE - a request to delete the resource.
+
+To a large degree these things are conventional. For instance, you
+might update your profile on Twitter with a POST request for the
+resource representing your profile.
+
+NB - cookies are little things that a client and server pass back and
+forth in the HEADER to represent so-called "session" information.
+
+*** Debugging with your Browser
+
+Again, ideally you won't need to do this but I wanted to show you how.
+
+#+CAPTION: A debugger open at Linked In showing the requests the page has initiated.
+#+NAME:   fig:1
+[[./images/debugger.png]]
+
+*** HTML/CSS 
+
+HTML is a text based language for describing documents. CSS is the
+associated language for describing how those documents should be
+rendered. HTML looks like this:
+
+#+begin_src 
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Example</title>
+    </head>
+    <body>
+        <img src=""/>
+        <p>Hello World</p>
+    </body>
+</html>
+#+end_src
+
+Note that every opening tag (eg "<p>") is matched by a closing tag (eg
+"</p>"). Some tags don't need this treatment if they don't enclose
+anything. In that case you see the "/" at the end of the tag as in the
+image example above. This is a self closing tag. You should read such
+as both the open and close tag. Eg:
+
+#+begin_src html
+<p/>
+#+end_src
+
+Is the same as 
+
+#+begin_src html
+<p></p>
+#+end_src
+
+Browsers are pretty forgiving if you forget to close a tag but who
+knows what you'll see [[https://web.archive.org/web/20140310190221/http://www.sewingandembroiderywarehouse.com/embtrb.htm][if you forget]]. Its wrong to not close tags. In
+fact, for the appendices in the clustering lecture I had some serious
+problems pulling data from a web page because there were unclosed
+tags.
+
+Note that the HTML above just conveys semantic information with its
+tags. Its up to the browser to use CSS to determine how the page is
+actually drawn.
+
+CSS (cascading style sheets) tell the browser how to actually "render"
+the page.
+
+It looks like this:
+
+#+begin_src 
+p {
+  background-color: red;
+  font-size: 15px;
+}
+#+end_src
+
+You link CSS to a document via a line in the "<head></head>":
+
+#+begin_src 
+<link rel="stylesheet" href="styles.css">
+#+end_src
+
+*** Javascript!
+
+Like HTML and CSS RShiny purports to hide this from you. Javascript is
+the programming language running inside your browser. It handles
+non-trivial behaviors that happen on the client.
+
+Javascript is, very broadly speaking, similar to R.
+
+Key differences:
+
+1. Much less environment tom-foolery. You cannot get your hands on
+   environments.
+2. Eager evaluation is the only model: arguments to functions are
+   evaluated before the function body is entered and cannot be
+   evaluated anywhere else but the calling context.
+3. Ubiquity of "objects." Javascript heavily uses objects which are
+   similar to R lists but meant only for key/value associations. There
+   are also javascript arrays but these can hold any type of object
+   and are only one dimensional.
+4. Asynchronous execution model. The primary role of javascript code
+   is to do something and then get out of the way so the browser can
+   take over. Thus, you frequently write "callbacks" or some variation
+   on them (promises or use of the async/await pattern) to tell the
+   browser you want to run a piece of code when some specific event
+   happens.
+
+Programming in JS is outside of the scope of this class but its a very
+useful skill to develop. In particular, there is a library called D3
+which is used for interactive visualizations. You can achieve
+substantially better results with D3 than shiny, but you must learn
+both javascript and D3's idiosyncratic view of the world.
+
+** RShiny
+
+Because browsers are so ubiquitous and powerful they are a great
+platform for visualization engines.
+
+However, the above combination of technologies is a lot to onboard if
+you don't want to dedicate a significant amount of time to it.
+
+Thus: Shiny. Shiny allows you to build _both_ the front and _back_ end
+of an application entirely in R. You can extend Shiny if you know
+browser technologies but in many cases you don't need to.
+
+*** Shiny Hello World
+
+Shiny is built into the rocker/verse Docker container. You might need
+to install it via
+
+#+begin_src 
+install.packages("shiny");
+#+end_src
+
+Hello World:
+
+#+begin_src 
+cat << EOF > shiny-hello.R
+library(shiny);
+
+ui <- fluidPage("Hello World");
+
+server <- function(input,output,session){
+  # Does nothing
+}
+
+# Start the Server
+shinyApp(ui=ui,server=server,
+  options=list(port=8080, host="0.0.0.0"));
+
+EOF
+#+end_src
+
+Running this code will start a server on port 8080. If you are running
+w/ Docker you need to remap you port appropriately. The appropriate
+invocation is like if you want to start your shiny app by itself.
+
+#+begin_src sh
+docker run \
+    -p 8080:8080 \ 
+    -v `pwd`:/home/rstudio/project \
+    -e PASSWORD=$SECRET_PWD \
+    -it l13 sudo -H -u rstudio \
+    /bin/bash -c "cd ~/project; Rscript shiny-hello.R"
+#+end_src
+
+What this invocation does (for those keeping track) is use "sudo" to
+run a command as the rstudio user. We run bash, change to the right
+directory and then launch the R process.
+
+As usual, you'll need to replace that `pwd` with either the full local
+directory name in Windows or with "$(pwd)" if you have spaces in your
+names. You'll need to escape spaces etc.
+
+You can also start a shiny app from within R Studio at the command
+line by adding this to your invocation:
+
+#+begin_src sh
+docker run \
+       -p 8080:8080 \
+       -p 8787:8787 \
+       -e PASSWORD=<your_password>
+       -v $(pwd):/home/rstudio/project
+       -t <your-container-tag>
+#+end_src
+
+Then within R studio you can launch your shiny app from the command
+line/terminal:
+
+#+begin_src sh
+Rscript shiny-hello.R
+#+end_src
+
+And it should be accessible on localhost:8080 on your browser.
+
+You can run a shiny app from within Rstudio but I want you to know how
+to launch your apps stand alone. I do, however, recommend this
+approach over starting via Docker. Its easier.
+
+*** UI and Server
+
+To create a shiny app you need to define a UI object and a server
+function. 
+
+The UI Object describes the layout of the page including any
+interactive elements.
+
+The server function describes how events which occur on the front end
+propagate to the back end and back to the front end.
+
+*** A More Complicated Example
+
+#+INCLUDE: "shiny2.R" src R
+
+The important bits here are:
+
+#+begin_src R
+      sliderInput(inputId = "bins",
+                  label = "Number of bins:",
+                  min = 1,
+                  max = 50,
+                  value = 30)
+
+#+end_src
+
+Note that the input we create here is given an ID: "bins."
+
+This allows us to refer to it on the input object here:
+
+#+begin_src R
+bins <- seq(min(x), max(x), length.out = input$bins + 1)
+#+end_src
+
+And note that we create, in the main panel:
+
+#+begin_src R
+      plotOutput(outputId = "distPlot")
+#+end_src
+
+And give it an output id "distPlot".
+
+This allows us to update the plot when an event occurs:
+
+#+begin_src R
+  output$distPlot <- renderPlot({
+
+    x    <- faithful$waiting
+    bins <- seq(min(x), max(x), length.out = input$bins + 1)
+
+    hist(x, breaks = bins, col = "#75AADB", border = "white",
+         xlab = "Waiting time to next eruption (in mins)",
+         main = "Histogram of waiting times")
+
+    })
+#+end_src
+
+Note that we wrap our output in renderPlot. 
+
+*** Shiny Concepts
+
+**** Reactive Programming
+
+[[https://shiny.rstudio.com/articles/basics.html][From the RShiny documentation]]:
+
+"Reactive programming is a coding style that starts with reactive
+values–values that change in response to the user, or over time–and
+builds on top of them with reactive expressions–expressions that
+access reactive values and execute other reactive expressions.
+
+What’s interesting about reactive expressions is that whenever they
+execute, they automatically keep track of what reactive values they
+read and what reactive expressions they invoked. If those
+“dependencies” become out of date, then they know that their own
+return value has also become out of date. Because of this dependency
+tracking, changing a reactive value will automatically instruct all
+reactive expressions that directly or indirectly depend on that value
+to re-execute."
+
+Note that this is a bit like a makefile except for values in R.
+
+Here is an example from the documentation:
+
+(Note that this example makes use of the rock, pressure and cars
+datasets).
+
+#+begin_src R
+datasetInput <- reactive({
+   switch(input$dataset,
+          "rock" = rock,
+          "pressure" = pressure,
+          "cars" = cars)
+})
+#+end_src
+
+We have some of the tools to parse this expression already. First of
+all, it seems like this reactive value refers to an input object which
+has no binding.
+
+Reactive expressions must thus do something funny with the evaluation
+semantics of the language.
+
+Indeed, if we try to execute this expression in R:
+
+#+begin_src R
+datasetInput()
+datasetInput()
+Error in .getReactiveEnvironment()$ currentContext() : Operation not allowed
+without an active reactive context.
+(You tried to do something that can only be done from
+    inside a reactive expression or observer.)
+#+end_src
+
+However, if we call datasetInput from inside of our server function it
+will run. Reactive expressions need to be in the right context to mean
+something. Most of the time that context is the UI declaration or the
+server function.
+
+*** Sources, Conductors and Endpoints
+
+Consider this example:
+
+#+INCLUDE: "fib-example.R" src R
+
+#+CAPTION: The three types of reactive objects in Shiny.
+#+NAME:   fig:2
+[[./images/reactive-roles.png]]
+
+[[https://shiny.rstudio.com/articles/reactivity-overview.html][Reactivity Overview]]
+
+A useful metaphor for reactive objects is that they are cells in a big
+virtual spreadsheet linked by formulas. When you change a cell that a
+formula depends on, the formula is re-run. You can simplify a
+calculation in a spreadsheet by putting values into intermediate
+cells. These are the reactive conductors.
+
+We can label all the parts of our app now. The inputs are sources, the
+outputs are endpoints and the currentFib object represents a
+conductor. It happens to cache our data.
+
+Note that we put all the reactive code inside the server function.
+
+*** Shiny, ggplot and plotly.
+
+We can use ggplot directly inside of Shiny:
+
+#+begin_src R
+library(shiny);
+library(tidyverse);
+
+ui <- shinyUI(fluidPage(
+numericInput(inputId="n",value=1,label="Samples"),
+plotOutput(outputId="thePlot")));
+
+server <- function(input, output) {
+    output$thePlot <- renderPlot(ggplot(tibble(x=rnorm(as.numeric(input$n))),aes(x))
+                                 +geom_histogram());
+}
+
+# Start the Server
+shinyApp(ui=ui,server=server,
+  options=list(port=8080, host="0.0.0.0"));
+
+#+end_src
+
+But doing so isn't that satisfactory. Its much nicer to use plotly to
+convert our figures into HTML/Javascript. It produces a much more
+interactive result.
+
+#+begin_src R
+library(shiny);
+library(tidyverse);
+library(plotly);
+
+ui <- shinyUI(fluidPage(
+numericInput(inputId="n",value=1,label="Samples"),
+plotlyOutput(outputId="thePlot")));
+
+server <- function(input, output) {
+    plt <- ggplot(tibble(x=rnorm(as.numeric(input$n))),aes(x))
+                                 +geom_histogram();
+    output$thePlot <- renderPlotly(ggplotly(plt));
+}
+
+# Start the Server
+shinyApp(ui=ui,server=server,
+  options=list(port=8080, host="0.0.0.0"));
+#+end_src
+
+Note that we just use "plotlyOutput" in our UI and "renderPlotly" in
+our server code.
+
+*** Inputs
+
+[[https://shiny.rstudio.com/tutorial/written-tutorial/lesson3/][A good place to get a sense for what you can put in a UI as an input]].
+
+*** Example
+
+Interactive visualizations are useful for quick explorations. Let's
+whip something up.
+
+#+INCLUDE: "./comics-explorer.R" src R
+
+* Recap
+
+Shiny is an R system which lets you write pure R and constructs a web
+application for you. The basic idea is to connect inputs (defined in
+your UI) to your server function, which typically produces plots and
+tables as outputs.
+
+Sometimes you need to cache intermediate results to prevent them from
+being run too often. Use reactive elements or "conductors" to stage
+such intermediate calculations.
+
+The result is a server which presents a web page (HTML/CSS/JS) which
+makes a series of requests to your back end, which in turn renders the
+appropriate figures.
+
