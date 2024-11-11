@@ -33,5 +33,20 @@ RUN pip3 install scikit-learn bokeh plotnine
 
 RUN pip3 install scikit-learn bokeh plotnine jupyterlab
 
+RUN R -e "install.packages(c('gbm','pROC'))"
+# Install dependencies
+RUN apt-get update && \
+    apt-get install -y python3 python3-pip && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Jupyter Lab, Bokeh, and necessary extensions directly via pip
+RUN pip3 install jupyterlab bokeh jupyter_bokeh ipywidgets
+
+# Optional: Install additional extensions
+RUN pip3 install jupyterlab_code_formatter jupyterlab-git
+
+RUN pip3 install nltk llama_cpp_python tqdm openai gensim
+
 # Set the default command to start Emacs
 CMD ["emacs"]
